@@ -1,12 +1,12 @@
-# EUR/RUB Exchange Bot v0.3.3
+# WireTransfer v0.3.7
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.3.3-blue.svg" alt="Version 0.3.3">
+  <img src="https://img.shields.io/badge/version-0.3.7-blue.svg" alt="Version 0.3.7">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
 
-A professional Telegram bot for facilitating EUR/RUB currency exchanges with a secure and user-friendly interface. This stable release includes comprehensive admin tools, dynamic currency rates, enhanced review confirmation system, and improved user experience.
+A professional Telegram bot for facilitating EUR/RUB currency exchanges with a secure and user-friendly interface. WireTransfer includes comprehensive admin tools, dynamic currency rates, enhanced review confirmation system, and improved user data storage.
 
 ## 📋 Table of Contents
 
@@ -25,7 +25,7 @@ A professional Telegram bot for facilitating EUR/RUB currency exchanges with a s
 
 ## Overview
 
-This Telegram bot facilitates secure currency exchanges between EUR and RUB. Designed with both administrative controls and user-friendly interactions, it provides real-time exchange rates, processes requests, and handles customer reviews all within the Telegram interface.
+WireTransfer facilitates secure currency exchanges between EUR and RUB. Designed with both administrative controls and user-friendly interactions, it provides real-time exchange rates, processes requests, and handles customer reviews all within the Telegram interface.
 
 ### Target Users
 
@@ -46,7 +46,7 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
 
 - **Real-time Exchange Rates**
   - Dynamic rate fetching from Central Bank of Russia
-  - Custom rate formulation (buy/sell rates)
+  - Custom rate formulation (buy rate: CBR rate × 1.053, sell rate: CBR rate × 0.99)
   - Loading indicator during rate retrieval
   - Formatted, readable rate presentation
 
@@ -77,7 +77,7 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
 
 - **Data Management Tools**
   - JSON database file cleanup functionality
-  - User transaction tracking
+  - Multi-user transaction tracking with array-based storage
   - Review moderation with deletion capability
   - Notification system for new requests and reviews
 
@@ -103,7 +103,7 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
 
 ## System Architecture
 
-The bot is structured around these key components:
+WireTransfer is structured around these key components:
 
 1. **User State Management**
    - Class-based state tracking for multi-step processes
@@ -121,6 +121,7 @@ The bot is structured around these key components:
 
 4. **Data Persistence**
    - JSON-based storage for user transactions
+   - Array-based user ID storage for multiple transaction support
    - Two-stage review system (pending and approved)
    - User identification tracking
 
@@ -143,7 +144,7 @@ The bot is structured around these key components:
 1. **Clone or download the repository**
    ```
    git clone https://your-repository-url.git
-   cd telegram-exchange-bot
+   cd wiretransfer-bot
    ```
 
 2. **Install required packages**
@@ -178,14 +179,14 @@ The bot is structured around these key components:
 ### Optional Settings
 
 - Proxy configuration for regions with Telegram restrictions
-- Exchange rate multipliers (currently 1.053 for buying, 0.975 for selling)
+- Exchange rate multipliers (currently 1.053 for buying, 0.99 for selling)
 - Minimum amounts (10,000 RUB, 100 EUR)
 - Maximum amounts (100,000,000 RUB, 1,000,000 EUR)
 
 ### File Structure
 
-- `main.py`: Core bot code
-- `users_id.json`: Tracks user transaction history
+- `main.py`: Core WireTransfer bot code
+- `users_id.json`: Tracks multiple user transaction history with array storage
 - `users_id_review.json`: Tracks users who submitted reviews
 - `reviews.json`: Stores approved user reviews
 - `reviews_confirm.json`: Stores pending reviews awaiting approval
@@ -217,7 +218,7 @@ The "Очистка файлов" button allows admins to reset the following da
 
 ### Processing Transactions
 
-1. You will receive notifications of new exchange requests
+1. You will receive notifications of new exchange requests with both detailed and formatted versions
 2. Contact users via their Telegram username
 3. Follow standard exchange protocols for completing transactions
 
@@ -225,7 +226,7 @@ The "Очистка файлов" button allows admins to reset the following da
 
 ### Starting the Bot
 
-1. Search for your bot on Telegram
+1. Search for WireTransfer bot on Telegram
 2. Click "Start" or type `/start`
 3. You'll see the main menu with exchange options
 
@@ -262,7 +263,7 @@ Click "Инструкция" for detailed steps on the exchange process.
 
 ## API Integration
 
-The bot integrates with the Central Bank of Russia API to obtain current exchange rates:
+WireTransfer integrates with the Central Bank of Russia API to obtain current exchange rates:
 
 ```python
 def get_eur_rub():
@@ -277,7 +278,7 @@ def get_eur_rub():
 
 Custom rates are calculated based on this data:
 - Buy rate: CBR rate × 1.053
-- Sell rate: CBR rate × 0.975
+- Sell rate: CBR rate × 0.99
 
 ## Security
 
@@ -298,14 +299,64 @@ Custom rates are calculated based on this data:
 
 ### Storage System
 
-The bot uses three JSON files for data persistence:
+WireTransfer uses four JSON files for data persistence:
 
-1. `users_id.json`: Records completed transactions
+1. `users_id.json`: Records multiple completed transactions with array storage
 2. `users_id_review.json`: Tracks users who have submitted reviews
 3. `reviews.json`: Stores approved user reviews
 4. `reviews_confirm.json`: Stores pending reviews awaiting approval
 
 ### Data Formats
 
-Example review storage format:
+Example user storage format:
+```json
+{
+  "user_ids": [123456789, 987654321, 456789123]
+}
 ```
+
+Example review storage format:
+```json
+{
+  "123456789": ["✅ @username: Great service, fast exchange! Very satisfied.\n"]
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Bot not responding**
+   - Check your internet connection
+   - Verify bot token is correct
+   - Ensure Python script is running
+
+2. **Can't write reviews**
+   - You must complete a transaction first
+   - You can only submit one review
+
+3. **Exchange rate not showing**
+   - Central Bank API may be temporarily unavailable
+   - Check your internet connection
+
+### Error Messages
+
+- **"Сумма должна быть больше..."**: Minimum amount requirement not met
+- **"Пожалуйста, введите имя и фамилию латиницей"**: Name must be in Latin characters
+- **"Вы уже писали отзыв!"**: You've already submitted a review
+
+## Contact & Support
+
+For technical support or inquiries about WireTransfer:
+
+- **Developer**: Aleksander Samarin
+- **Location**: Blagoveshchensk, Russia
+- **Year**: 2023
+- **Contact**: @RSantila on Telegram
+
+---
+
+<p align="center">
+  <strong>© 2023 Aleksander Samarin. All rights reserved.</strong><br>
+  WireTransfer is provided for private use only. Redistribution or modification without explicit permission is prohibited.
+</p>

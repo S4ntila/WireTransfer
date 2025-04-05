@@ -53,7 +53,7 @@ def reset_user_state():
     user_state.username = None
 
 #-------------------------КУРС-----------------------------#
-def get_eur_rub(): # Определяем функцию для получения курса евро к рублю с помощью API Центробанка России
+def get_eur_rub(): # Получаем курс от API Центробанка России
     response = requests.get("https://www.cbr-xml-daily.ru/daily_json.js")
     if response.status_code == 200:
         data = response.json()
@@ -63,11 +63,12 @@ def get_eur_rub(): # Определяем функцию для получени
         return None
     
 def get_eur_rub_rate(type): # Подгоняем под нужный курс
+    print('Настоящий курс: ', get_eur_rub())
     if type == "Покупка":
         eur_rub_buy = round(get_eur_rub() * 1.053, 2)
         return eur_rub_buy 
     elif type == "Продажа":
-        eur_rub_sell = round(get_eur_rub() * 0.975, 2)
+        eur_rub_sell = round(get_eur_rub() * 0.99, 2)
         return eur_rub_sell
     else:
         return None
@@ -86,21 +87,29 @@ def check_spam(user_id):
 #-----------------------------------УДАЛЕНИЕ------------------------------------#
 def delete_user_info_about(message): # Чистка файлов
     try:
-        os.remove("users_id.json")
+        with open("users_id.json", 'w') as file:
+            data = {} # создаем пустой словарь
+            json.dump(data, file) # сохраняем его в файл
     except:
-        print("Файл users_id.json не был создан, чтобы его удалять")
+        print("Файл users_id.json не был найден или не может быть открыт")
     try:
-        os.remove("users_id_review.json")
+        with open("users_id_review.json", 'w') as file:
+            data = {} # создаем пустой словарь
+            json.dump(data, file) # сохраняем его в файл
     except:
-        print("Файл users_id_review.json не был создан, чтобы его удалять")
+        print("Файл users_id_review.json не был найден или не может быть открыт")
     try:
-        os.remove("reviews.json")
+        with open("reviews.json", 'w') as file:
+            data = {} # создаем пустой словарь
+            json.dump(data, file) # сохраняем его в файл
     except:
-        print("Файл reviews.json не был создан, чтобы его удалять")
+        print("Файл reviews.json не был найден или не может быть открыт")
     try:
-        os.remove("reviews_confirm.json")
+        with open("reviews_confirm.json", 'w') as file:
+            data = {} # создаем пустой словарь
+            json.dump(data, file) # сохраняем его в файл
     except:
-        print("Файл reviews_confirm.json не был создан, чтобы его удалять")
+        print("Файл reviews_confirm.json не был найден или не может быть открыт")
     
 def clean_message_history(message): # Функция для очистки истории сообщений
     try:
@@ -202,7 +211,7 @@ def confirm_check_reviews(message):
     keyboard.add(types.InlineKeyboardButton('Опубликовать', callback_data=f'confirm_review_by_admin:{user_id}'))
     user_reviews[user_id] = [f"✅ @{message.from_user.username}: {text}\n"]
     
-    bot.send_message(ADMIN_ID, f"Пользователь @{message.from_user.username} оставил свой отзыв: {text}", reply_markup=keyboard)
+    bot.send_message(ADMIN_ID2, f"Пользователь @{message.from_user.username} оставил свой отзыв: {text}", reply_markup=keyboard)
 
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
@@ -333,8 +342,10 @@ def confirm_exit(message):
 
     if user_state.type == "Покупка":
         bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} руб.</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
     else:
         bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
 
     save_user_id(user_state.user_id)
     print(user_state.user_id)
@@ -396,7 +407,7 @@ def callback_query(call):
         confirm_review_by_admin(call, user_id)
 
     elif data == 'delete_all':
-        delete_user_info_about(call.message)
+        delete_user_info_about(message)
         bot.send_message(call.message.chat.id, "Очистка завершена!")
 
     elif data == 'cancel':
@@ -438,29 +449,39 @@ def delete_review_confirm(user_id):
 #----------------------СОХРАНЕНИЯ-И-УДАЛЕНИЕ-МЕТРИКИ------------------------------#
 def save_user_id(user_id):
     try:
+        with open(userID_file, 'r') as file:
+            data = json.load(file)
+            user_ids = data.get('user_ids', []) # получаем список user_ids из файла или пустой список
         with open(userID_file, 'w') as file:
-            data = {'user_id': user_id}
-            json.dump(data, file)
+            user_ids.append(user_id) # добавляем новый user_id в список
+            data = {'user_ids': user_ids} # создаем словарь с ключом user_ids и значением списка
+            json.dump(data, file) # сохраняем словарь в файл
         print(f'User ID {user_id} успешно сохранен в файл {userID_file}')
     except Exception as e:
         print(f'Ошибка при сохранении User ID: {e}')
+
 def delete_user_id(user_id):
     try:
         with open(userID_file, 'r') as file:
             data = json.load(file)
-            user_id = data['user_id']
+            user_ids = data.get('user_ids', []) # получаем список user_ids из файла или пустой список
         with open(userID_file, 'w') as file:
-            data = {}
-            json.dump(data, file)
+            user_ids.remove(user_id) # удаляем user_id из списка
+            data = {'user_ids': user_ids} # создаем словарь с ключом user_ids и значением списка
+            json.dump(data, file) # сохраняем словарь в файл
         print(f'User ID {user_id} успешно удален из файла {userID_file}')
     except Exception as e:
         print(f'Ошибка при удалении User ID: {e}')
 
 def save_user_id_review(user_id):
     try:
+        with open(userID_file_review, 'r') as file:
+            data = json.load(file)
+            user_ids = data.get('user_ids', []) # получаем список user_ids из файла или пустой список
         with open(userID_file_review, 'w') as file:
-            data = {'user_id': user_id}
-            json.dump(data, file)
+            user_ids.append(user_id) # добавляем новый user_id в список
+            data = {'user_ids': user_ids} # создаем словарь с ключом user_ids и значением списка
+            json.dump(data, file) # сохраняем словарь в файл
         print(f'User ID {user_id} успешно сохранен в файл {userID_file_review}')
     except Exception as e:
         print(f'Ошибка при сохранении User ID: {e}')
@@ -469,7 +490,8 @@ def check_user_id(user_id):
     try:
         with open(userID_file, 'r') as file:
             data = json.load(file)
-            if 'user_id' in data and data['user_id'] == user_id:
+            user_ids = data.get('user_ids', []) # получаем список user_ids из файла или пустой список
+            if user_id in user_ids: # проверяем наличие user_id в списке
                 return True
             else:
                 return False
@@ -479,11 +501,13 @@ def check_user_id(user_id):
     except Exception as e:
         print(f'Ошибка при проверке User ID: {e}')
         return False
+
 def check_user_id_review(user_id):
     try:
         with open(userID_file_review, 'r') as file:
             data = json.load(file)
-            if 'user_id' in data and data['user_id'] == user_id:
+            user_ids = data.get('user_ids', []) # получаем список user_ids из файла или пустой список
+            if user_id in user_ids: # проверяем наличие user_id в списке
                 return True
             else:
                 return False
@@ -497,6 +521,6 @@ def check_user_id_review(user_id):
 # -------------------------ЗАПУСК----------------------------
 bot.polling()
 # -----------------------------------------------------------
-# Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# version 3.3 (stable version - enhanced review confirmation system)
+# WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
+# version 0.3.7 (stable version - improved user data storage and enhanced messaging)
 # -----------------------------------------------------------
