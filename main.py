@@ -42,6 +42,7 @@ userID_file = "users_id.json"
 userID_file_review = "users_id_review.json"
 reviews_file = "reviews.json"
 reviews_file_confirm = "reviews_confirm.json"
+multipliers_file = "multipliers.json"
 
 #-------------------------СБРОС-ДАННЫХ-ПОЛЬЗОВАТЕЛЯ----------------------------#
 def reset_user_state():
@@ -64,11 +65,12 @@ def get_eur_rub(): # Получаем курс от API Центробанка �
         return None
     
 def get_eur_rub_rate(type): # Подгоняем под нужный курс
+    multipliers = load_multipliers() # загружаем множители из файла
     if type == "Покупка":
-        eur_rub_buy = round_if_zero(round(get_eur_rub() * 1.057, 1))
+        eur_rub_buy = round_if_zero(round(get_eur_rub() * multipliers["buy"], 1))
         return eur_rub_buy 
     elif type == "Продажа":
-        eur_rub_sell = round_if_zero(round(get_eur_rub() * 0.99, 1))
+        eur_rub_sell = round_if_zero(round(get_eur_rub() * multipliers["sell"], 1))
         return eur_rub_sell
     else:
         return None
@@ -145,13 +147,22 @@ def start_screen(message):
 
     user_state.user_id = message.chat.id
     keyboard = types.InlineKeyboardMarkup()
-    if is_admin(user_state.user_id):
+    if user_state.user_id == ADMIN_ID:
+        #print("Вы зашли как Администратор1")
         keyboard.add(types.InlineKeyboardButton('Обмен', callback_data='exchange'))
         keyboard.add(types.InlineKeyboardButton('Инструкция', callback_data='instructions'), types.InlineKeyboardButton('Отзывы', callback_data='reviews'))
         keyboard.add(types.InlineKeyboardButton('Курс', callback_data='rate'))
         keyboard.add(types.InlineKeyboardButton('Очистка файлов', callback_data='delete_all'), types.InlineKeyboardButton('Данные пользователей', callback_data='data'))
         keyboard.add(types.InlineKeyboardButton('Рез. Копирование', callback_data='backup'), types.InlineKeyboardButton('Восстановление', callback_data='restore'))
+        keyboard.add(types.InlineKeyboardButton('Изменить курс', callback_data='change_rate'))
+    elif user_state.user_id == ADMIN_ID2:
+        #print("Вы зашли как Администратор2")
+        keyboard.add(types.InlineKeyboardButton('Обмен', callback_data='exchange'))
+        keyboard.add(types.InlineKeyboardButton('Инструкция', callback_data='instructions'), types.InlineKeyboardButton('Отзывы', callback_data='reviews'))
+        keyboard.add(types.InlineKeyboardButton('Курс', callback_data='rate'))
+        keyboard.add(types.InlineKeyboardButton('Изменить курс', callback_data='change_rate'))
     else:
+        #print("Обычный пользователь зашёл в главное меню")
         keyboard.add(types.InlineKeyboardButton('Обмен', callback_data='exchange'))
         keyboard.add(types.InlineKeyboardButton('Инструкция', callback_data='instructions'), types.InlineKeyboardButton('Отзывы', callback_data='reviews'))
         keyboard.add(types.InlineKeyboardButton('Курс', callback_data='rate'))
@@ -277,39 +288,30 @@ def bank_choice(message):
 
     bot.send_message(message.chat.id, 'Укажите название банка, с которого будет осуществлён перевод:', reply_markup=keyboard)
 
-def amount_input(message):
+def amount_input(message): # ВВОД СУММЫ
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Отмена', callback_data='cancel'))
 
-    if user_state.type == 'Покупка':
-        bot.send_message(message.chat.id, 'Укажите сумму обмена в рублях (минимум 10000):', reply_markup=keyboard)
-    else:
-        bot.send_message(message.chat.id, 'Укажите сумму обмена в евро (минимум 100):', reply_markup=keyboard)
+    bot.send_message(message.chat.id, 'Укажите сумму обмена в евро (минимум 100):', reply_markup=keyboard)
 
-    delete_the_fucking_message(message)
+    delete_the_fucking_message(message) #####
 
     bot.register_next_step_handler(message, amount_check)
 
-def amount_check(message):
+def amount_check(message): # ПРОВЕРКА СУММЫ
     try:
         amount = int(message.text)
-        if user_state.type == 'Покупка':
-            if amount >= 10000 and amount <= 100000000:
-                user_state.amount = amount
-                iban_input(message)
-            else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 10000 рублей. Попробуй еще раз.')
-                amount_input(message)
+
+        if amount >= 100 and amount <= 1000000:
+            user_state.amount = amount
+            #print("Пользователь ввёл сумму")
+            iban_input(message)
         else:
-            if amount >= 100 and amount <= 1000000:
-                user_state.amount = amount
-                iban_input(message)
-            else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро. Попробуй еще раз.')
-                amount_input(message)
+            bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро. Попробуй еще раз.')
+            amount_input(message)
     except:
         if message.text == '/start':
-            delete_the_fucking_message(message)
+            delete_the_fucking_message(message) #####
             start_screen(message)
         else:
             bot.send_message(message.chat.id, 'Сумма должна быть числом. Попробуй еще раз.')
@@ -355,33 +357,37 @@ def name_check(message):
             bot.send_message(message.chat.id, 'Пожалуйста, введите имя и фамилию латиницей без цифр и кириллицы.')
             name_input(message)
 
-def confirm_screen(message):
+def confirm_screen(message): # ПРОЦЕСС ОКОНЧАТЕЛЬНОГО ОФОРМЛЕНИЯ ЗАЯВКИ
+    #print("Пользователь оформил заявку")
     user_state.username = message.from_user.username
     user_state.user_id = message.chat.id
-    delete_the_fucking_message(message)
+    #print(user_state.username)
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Подтвердить', callback_data='confirm'), types.InlineKeyboardButton('Отмена', callback_data='cancel'))
 
     if user_state.type == "Покупка":
-        bot.send_message(message.chat.id, f'Подтвердите ваши данные:\n\nТип перевода: <b>{user_state.type}</b>\nВаш банк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} руб.</b>\nIBAN: <b>{user_state.iban}</b>\nИмя и Фамилия: <b>{user_state.name}</b>',
+        bot.send_message(message.chat.id, f'Подтвердите ваши данные:\n\nТип перевода: <b>{user_state.type}</b>\nВаш банк: <b>{user_state.bank}</b>\nОтдаёте: <b>{round_if_zero(user_state.amount * get_eur_rub_rate("Покупка"))} руб.</b>\nПолучаете: <b>{user_state.amount} евро</b>\nIBAN: <b>{user_state.iban}</b>\nИмя и Фамилия: <b>{user_state.name}</b>',
                         parse_mode='html', reply_markup=keyboard)
     else:
-        bot.send_message(message.chat.id, f'Подтвердите ваши данные:\n\nТип перевода: <b>{user_state.type}</b>\nВаш банк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b>\nIBAN: <b>{user_state.iban}</b>\nИмя и Фамилия: <b>{user_state.name}</b>',
+        bot.send_message(message.chat.id, f'Подтвердите ваши данные:\n\nТип перевода: <b>{user_state.type}</b>\nВаш банк: <b>{user_state.bank}</b>\nОтдаёте: <b>{user_state.amount} евро</b>\nПолучаете: <b>{round_if_zero(user_state.amount * get_eur_rub_rate("Продажа"))} руб.</b>\nIBAN: <b>{user_state.iban}</b>\nИмя и Фамилия: <b>{user_state.name}</b>',
                         parse_mode='html', reply_markup=keyboard)
+    delete_the_fucking_message(message)
 
-def confirm_exit(message):
+def confirm_exit(message): # ПРОЦЕСС ПОДТВЕРЖДЕНИЯ ЗАЯВКИ И ОТПРАВКА ЕЁ АДМИНИСТРАТОРУ
+    #print("Пользователь отправил заявку администраторам!")
+
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
     bot.send_message(message.chat.id, f"✅ Ваша заявка создана!\n\nОжидайте, в ближайшее время свяжусь с вами 📞", reply_markup=keyboard)
 
     if user_state.type == "Покупка":
-        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
-        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} руб.</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR \nСумма обмена в рублях: {round_if_zero(user_state.amount * get_eur_rub_rate('Покупка'))} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Покупка'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
     else:
-        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
-        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR \nСумма обмена в рублях: {round_if_zero(user_state.amount * get_eur_rub_rate('Продажа'))} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Продажа'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
 
-    delete_the_fucking_message(message)
+    delete_the_fucking_message(message) #####
     
     save_user_id(user_state.user_id)
 
@@ -429,12 +435,10 @@ def start_command(message):
 def callback_query(call):
     data = call.data
     if data == 'exchange':
-        last_request_time[user_state.user_id] = time.time()
         exchange_type(call.message)
         delete_the_fucking_message(call.message)
     elif data == 'rate':
         rate(call.message)
-
     elif data == 'instructions':
         instructions(call.message)
 
@@ -445,7 +449,6 @@ def callback_query(call):
     elif data == 'Тинькофф' or data == 'Сбербанк' or data == 'Райффайзен':
         user_state.bank = data
         amount_input(call.message)
-
     elif data == 'confirm':
         confirm_exit(call.message)
 
@@ -453,43 +456,66 @@ def callback_query(call):
         reviews(call.message)
     elif data == 'write':
         reviews_write(call.message)
-        delete_the_fucking_message(call.message)
+        delete_the_fucking_message(call.message) #####
     elif data == 'read':
         reviews_read(call.message)
-        delete_the_fucking_message(call.message)
+        delete_the_fucking_message(call.message) #####
 
     elif data.startswith('confirm_review_by_admin:'):
+        #print("Администратор одобрил отзыв")
         user_id = data.split(':')[1]
         print("Отзыв пользователя: ", user_id, " был принят!")
         confirm_review_by_admin(call, user_id)
     elif data.startswith('cancel_review_by_admin:'):
+        #print("Администратор отклонил отзыв")
         user_id = data.split(':')[1]
         print("Отзыв пользователя: ", user_id, " был отклонён!")
         cancel_review_by_admin(call, user_id)
+        
     elif data == 'delete_all':
         delete_user_info_about(call.message)
         bot.send_message(call.message.chat.id, "Очистка завершена!")
         start_screen(call.message)
-        delete_the_fucking_message(call.message)
+        delete_the_fucking_message(call.message) #####
 
     elif data == 'data':
-        if is_admin(user_state.user_id):
-            show_data(call.message)
-            
+        #print("Администратор просматривает данные о пользователях")
+        delete_the_fucking_message(call.message) #####
+        show_data(call.message)
+
     elif data == 'backup':
         backup_files()
         bot.send_message(call.message.chat.id, "Копия создана")
         start_screen(call.message)
-        delete_the_fucking_message(call.message)
+        delete_the_fucking_message(call.message) #####
     elif data == 'restore':
         restore_files()
         bot.send_message(call.message.chat.id, "Копия восстановлена")
         start_screen(call.message)
-        delete_the_fucking_message(call.message)
+        delete_the_fucking_message(call.message) #####
+
+    elif data == 'change_rate':
+        change_rate(call.message)
+        delete_the_fucking_message(call.message) #####
+    elif data == 'change_buy':
+        change_buy(call.message)
+        delete_the_fucking_message(call.message) #####
+    elif data == 'change_sell':
+        change_sell(call.message)
+        delete_the_fucking_message(call.message) #####
+    elif data.startswith('apply_buy:'):
+        multiplier = float(data.split(':')[1])
+        apply_buy(call, multiplier)
+        delete_the_fucking_message(call.message) #####
+    elif data.startswith('apply_sell:'):
+        multiplier = float(data.split(':')[1])
+        apply_sell(call, multiplier)
+        delete_the_fucking_message(call.message) #####
 
     elif data == 'cancel':
-        delete_the_fucking_message(call.message)
+        #print("Пользователь перешёл в главное меню, нажав кнопку Отмена")
         start_screen(call.message)
+        delete_the_fucking_message(call.message)
 
 #------------------------------------------ОТЗЫВЫ-------------------------------# 
 def save_reviews(user_id):
@@ -639,17 +665,99 @@ def restore_files(): # Функция для восстановления фай
         shutil.copy(f"backup/{file}", file) # Копируем файл из папки backup в исходную директорию с заменой
     print("Файлы успешно восстановлены!")
 
+def save_multipliers(multipliers): # Сохраняем множители в файл
+    with open(multipliers_file, mode="w") as file:
+        json.dump(multipliers, file)
+
+def change_rate(message):
+    # Выводим текущие множители курса и предлагаем выбрать тип обмена для изменения
+    multipliers = load_multipliers()
+    eur_rub_buy_str = get_eur_rub_rate("Покупка")
+    eur_rub_sell_str = get_eur_rub_rate("Продажа")
+
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('Покупка', callback_data='change_buy'), types.InlineKeyboardButton('Продажа', callback_data='change_sell'))
+    keyboard.add(types.InlineKeyboardButton('Отмена', callback_data='cancel'))
+    bot.send_message(message.chat.id, f"Текущий курс:\n\n🟢 RUB ➜ EUR: <b>{eur_rub_buy_str}</b>    Множитель: <b>{multipliers['buy']}</b>\n🔴 EUR ➜ RUB: <b>{eur_rub_sell_str}</b>   Множитель: <b>{multipliers['sell']}</b>\n\nВыберите тип обмена, который хотите изменить:", parse_mode='html', reply_markup=keyboard)
+    
+# Добавляем новые функции для обработки нажатия на кнопки покупка и продажа в меню изменения курса
+def change_buy(message):
+    # Просим ввести новый множитель курса покупки и регистрируем следующий шаг
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('Отмена', callback_data='cancel'))
+    bot.send_message(message.chat.id, "Введите новый множитель курса покупки (например, 1.05):", reply_markup=keyboard)
+    bot.register_next_step_handler(message, confirm_buy)
+
+def change_sell(message):
+    # Просим ввести новый множитель курса продажи и регистрируем следующий шаг
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('Отмена', callback_data='cancel'))
+    bot.send_message(message.chat.id, "Введите новый множитель курса продажи (например, 0.95):", reply_markup=keyboard)
+    bot.register_next_step_handler(message, confirm_sell)
+
+# Добавляем новые функции для подтверждения изменения множителей курса
+def confirm_buy(message):
+    # Проверяем корректность введенного значения и выводим новый курс покупки
+    try:
+        multiplier = float(message.text)
+        if multiplier > 0 and multiplier < 10:
+            new_rate = round_if_zero(round(get_eur_rub() * multiplier, 1))
+            keyboard = types.InlineKeyboardMarkup()
+            keyboard.add(types.InlineKeyboardButton('Применить', callback_data=f'apply_buy:{multiplier}'), types.InlineKeyboardButton('Назад', callback_data='change_rate'))
+            bot.send_message(message.chat.id, f"Новый множитель: <b>{multiplier}</b>\n\nНовый курс покупки: <b>{new_rate}</b>", parse_mode='html', reply_markup=keyboard)
+        else:
+            bot.send_message(message.chat.id, "Множитель должен быть положительным числом меньше 10. Попробуйте еще раз.")
+            change_buy(message)
+    except:
+        bot.send_message(message.chat.id, "Множитель должен быть числом. Попробуйте еще раз.")
+        change_buy(message)
+
+def confirm_sell(message):
+    # Проверяем корректность введенного значения и выводим новый курс продажи
+    try:
+        multiplier = float(message.text)
+        if multiplier > 0 and multiplier < 10:
+            new_rate = round_if_zero(round(get_eur_rub() * multiplier, 1))
+            keyboard = types.InlineKeyboardMarkup()
+            keyboard.add(types.InlineKeyboardButton('Применить', callback_data=f'apply_sell:{multiplier}'), types.InlineKeyboardButton('Назад', callback_data='change_rate'))
+            bot.send_message(message.chat.id, f"Новый множитель: <b>{multiplier}</b>\n\nНовый курс продажи: <b>{new_rate}</b>", parse_mode='html', reply_markup=keyboard)
+        else:
+            bot.send_message(message.chat.id, "Множитель должен быть положительным числом меньше 10. Попробуйте еще раз.")
+            change_sell(message)
+    except:
+        bot.send_message(message.chat.id, "Множитель должен быть числом. Попробуйте еще раз.")
+        change_sell(message)
+
+# Добавляем новые функции для применения изменения множителей курса
+def apply_buy(call, multiplier):
+    # Сохраняем новый множитель курса покупки в файл и выводим сообщение об успехе
+    multipliers = load_multipliers()
+    multipliers["buy"] = multiplier
+    save_multipliers(multipliers)
+    bot.send_message(call.message.chat.id, f"Новый множитель курса покупки успешно применен! 🎉\n\nТеперь курс покупки составляет <b>{round_if_zero(round(get_eur_rub() * multiplier, 1))}</b>", parse_mode='html')
+    start_screen(call.message)
+
+def apply_sell(call, multiplier):
+    # Сохраняем новый множитель курса продажи в файл и выводим сообщение об успехе
+    multipliers = load_multipliers()
+    multipliers["sell"] = multiplier
+    save_multipliers(multipliers)
+    bot.send_message(call.message.chat.id, f"Новый множитель курса продажи успешно применен! 🎉\n\nТеперь курс продажи составляет <b>{round_if_zero(round(get_eur_rub() * multiplier, 1))}</b>", parse_mode='html')
+    start_screen(call.message)
+
 # -------------------------ЗАПУСК----------------------------
 bot.polling()
 # -----------------------------------------------------------
-# RUS: WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# ENG: WireTransfer - Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
+# RUS: Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
+# ENG: Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.3.8 (stable version with improved number formatting)
-#                                                                                              05.10.2023 15:30 GMT+9
-# Features: Added round_if_zero function to properly display whole numbers without decimal points
-# Improved currency rate display for better user experience
-# Other features from 1.3.6: Improved README, detailed installation guides, and enhanced troubleshooting information
+# version 1.4.2 (stable version with exchange rate multiplier management)
+#                                                                                              09.30.2023 23:21 GMT+9
+# Features: for administrators, a button has been added in the main menu to change the rate multiplier, the method of storing 
+#   multipliers in a file has also been revised, a mechanism for changing the multiplier for a specific type of exchange has been 
+#   implemented using the button, the application form has also been corrected, now the user, regardless of the type, always enters 
+#   a number in euros and at the end It shows him how much it will be in rubles, also administrator notifications have been redone and 
+#   in addition to euros, they also display the amount in rubles, taking into account the current exchange rate of the bot
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
