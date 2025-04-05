@@ -174,12 +174,22 @@ def instructions(message):
     delete_the_fucking_message(message) #####
 
 def reviews(message):
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton('Написать отзыв', callback_data='write'), types.InlineKeyboardButton('Просмотреть отзывы', callback_data='read'))
-    keyboard.add(types.InlineKeyboardButton('Назад', callback_data='cancel'))
-
-    bot.send_message(message.chat.id, "Вы можете оставить отзыв о моей работе или посмотреть отзывы других пользователей", reply_markup=keyboard)
-    delete_the_fucking_message(message) #####
+    try:
+        # Проверка наличия отзыва пользователя
+        data = check_id_review(message)
+        if data == 'stop':
+            return
+        
+        markup = telebot.types.InlineKeyboardMarkup()
+        button = telebot.types.InlineKeyboardButton(text='Оставить отзыв 💬', callback_data='leave_review')
+        markup.add(button)
+        button2 = telebot.types.InlineKeyboardButton(text='Посмотреть отзывы пользователей 🔍', callback_data='read_reviews')
+        markup.add(button2)
+        button3 = telebot.types.InlineKeyboardButton(text='⬅️ В главное меню', callback_data='to_main_menu')
+        markup.add(button3)
+        bot.send_message(message.chat.id, 'Выберите действие:', reply_markup=markup)
+    except Exception as e:
+        bot.send_message(message.chat.id, f'Ошибка в функции reviews: {str(e)}')
 
 def reviews_write(message):
     if check_user_id(message.chat.id) == False:
@@ -233,18 +243,41 @@ def cancel_review_by_admin(call, user_id):
     bot.send_message(call.message.chat.id, f"Отзыв пользователя @{bot.get_chat_member(user_id, user_id).user.username} был успешно отклонён! 🎉")
 
 def reviews_read(message):
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton('Написать отзыв', callback_data='write'), types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
+    try:
+        file_path = reviews_file
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                reviews_list = json.load(f)
 
-    user_reviews = load_reviews()
-    if user_reviews:
-        reviews_text = ""
-        for user_id, reviews in user_reviews.items():
-            for review in reviews:
-                reviews_text += f"{review}\n"
-        bot.send_message(message.chat.id, f"Вот что пишут о моей работе другие пользователи:\n\n{reviews_text}", reply_markup=keyboard)
-    else:
-        bot.send_message(message.chat.id, "Пока еще нет ни одного отзыва о моей работе. 😢", reply_markup=keyboard)
+            if not reviews_list:
+                markup = telebot.types.InlineKeyboardMarkup()
+                button1 = telebot.types.InlineKeyboardButton(text='Оставить отзыв 💬', callback_data='leave_review')
+                markup.add(button1)
+                button2 = telebot.types.InlineKeyboardButton(text='⬅️ В главное меню', callback_data='to_main_menu')
+                markup.add(button2)
+                bot.send_message(message.chat.id, 'Отзывы отсутствуют\n\nСтаньте первым, кто оставит отзыв о сервисе!', reply_markup=markup)
+                return
+
+            # Формирование сообщения с отзывами
+            reviews_text = 'Отзывы пользователей:\n\n'
+            for review in reviews_list:
+                reviews_text += f"👤 {review['user_name']}\n⭐ {review['rate']}/5\n💬 {review['text']}\n\n"
+
+            markup = telebot.types.InlineKeyboardMarkup()
+            button1 = telebot.types.InlineKeyboardButton(text='Оставить отзыв 💬', callback_data='leave_review')
+            markup.add(button1)
+            button2 = telebot.types.InlineKeyboardButton(text='⬅️ В главное меню', callback_data='to_main_menu')
+            markup.add(button2)
+            bot.send_message(message.chat.id, reviews_text, reply_markup=markup)
+        else:
+            markup = telebot.types.InlineKeyboardMarkup()
+            button1 = telebot.types.InlineKeyboardButton(text='Оставить отзыв 💬', callback_data='leave_review')
+            markup.add(button1)
+            button2 = telebot.types.InlineKeyboardButton(text='⬅️ В главное меню', callback_data='to_main_menu')
+            markup.add(button2)
+            bot.send_message(message.chat.id, 'Отзывы отсутствуют\n\nСтаньте первым, кто оставит отзыв о сервисе!', reply_markup=markup)
+    except Exception as e:
+        bot.send_message(message.chat.id, f'Ошибка в функции reviews_read: {str(e)}')
     
 def exchange_type(message):
     keyboard = types.InlineKeyboardMarkup()
@@ -603,10 +636,10 @@ bot.polling()
 # RUS: WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: WireTransfer - Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.3.0 (stable version with no canceling user_id in administration aborting review)
-#                                                                                              09.27.2023 18:28 GMT+9
-# Features: Fix removing reviews
-# Bugs and problems: The user_id dont removed if administrastion abort review
+# version 1.3.1 (stable version with no canceling user_id in administration aborting review)
+#                                                                                              09.28.2023 7:23 GMT+9
+# Features: Text correction in line 169, 172 and 252
+# Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
 # Powered by RSantila 
