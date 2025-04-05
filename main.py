@@ -65,13 +65,24 @@ def get_eur_rub(): # Получаем курс от API Центробанка �
     
 def get_eur_rub_rate(type): # Подгоняем под нужный курс
     if type == "Покупка":
-        eur_rub_buy = round(get_eur_rub() * 1.053, 2)
+        eur_rub_buy = round_if_zero(round(get_eur_rub() * 1.057, 1))
         return eur_rub_buy 
     elif type == "Продажа":
-        eur_rub_sell = round(get_eur_rub() * 0.99, 2)
+        eur_rub_sell = round_if_zero(round(get_eur_rub() * 0.99, 1))
         return eur_rub_sell
     else:
         return None
+
+def round_if_zero(x):
+    # Получаем дробную часть числа
+    frac = x - int(x)
+    # Если дробная часть равна нулю, округляем число до целого
+    if frac == 0:
+        return int(round(x))
+    # Иначе возвращаем исходное число
+    else:
+        return x
+
 #-------------------------СПАМ-----------------------------#
 def check_spam(user_id):
     current_time = time.time()
@@ -634,9 +645,11 @@ bot.polling()
 # RUS: WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: WireTransfer - Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.3.6 (stable version with improved documentation and setup instructions)
-#                                                                                              30.09.2023 15:30 GMT+9
-# Features: Improved README, detailed installation guides, and enhanced troubleshooting information
+# version 1.3.8 (stable version with improved number formatting)
+#                                                                                              05.10.2023 15:30 GMT+9
+# Features: Added round_if_zero function to properly display whole numbers without decimal points
+# Improved currency rate display for better user experience
+# Other features from 1.3.6: Improved README, detailed installation guides, and enhanced troubleshooting information
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia

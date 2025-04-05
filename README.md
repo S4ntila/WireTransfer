@@ -1,11 +1,11 @@
-# WireTransfer 1.3.6
+# WireTransfer 1.3.8
 
 <p align="center">
   <img src="icon.jpg" alt="WireTransfer Logo" width="200" height="200">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.6-blue.svg" alt="Version 1.3.6">
+  <img src="https://img.shields.io/badge/version-1.3.8-blue.svg" alt="Version 1.3.8">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -31,6 +31,8 @@ WireTransfer — это удобный Telegram бот для обработки
 - 🔄 **Резервное копирование**: Сохранение данных пользователей и их восстановление
 
 ## 🚀 Подробная инструкция по установке
+
+### Установка из исходного кода
 
 1. **Клонирование репозитория**
    ```bash
@@ -104,11 +106,10 @@ WireTransfer — это удобный Telegram бот для обработки
 3. **Модерация отзывов**: Одобрение или отклонение отзывов пользователей
 4. **Резервное копирование**: Создание и восстановление резервных копий данных
 
-## 🔄 Обновления в версии 1.3.6
-- 🔒 Улучшена система резервного копирования
-- 🧹 Оптимизирована очистка сообщений
-- 📝 Расширены комментарии в коде для облегчения поддержки
-- 🐛 Исправлены ошибки предыдущих версий
+## 🔄 Обновления в версии 1.3.8
+- 🔢 Улучшенное форматирование чисел (целые числа отображаются без десятичной части)
+- 📊 Улучшенное отображение курсов валют с округлением до 1 знака после запятой
+- 🔒 Сохранены все улучшения из версии 1.3.6
 
 ---
 
@@ -126,6 +127,8 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 - 🔄 **Backup System**: User data saving and recovery
 
 ## 🚀 Detailed Installation Guide
+
+### Installation from Source Code
 
 1. **Clone the Repository**
    ```bash
@@ -199,11 +202,10 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 3. **Review Moderation**: Approve or reject user reviews
 4. **Backup**: Create and restore data backups
 
-## 🔄 Updates in Version 1.3.6
-- 🔒 Improved backup system
-- 🧹 Optimized message cleanup
-- 📝 Extended code comments for easier maintenance
-- 🐛 Fixed bugs from previous versions
+## 🔄 Updates in Version 1.3.8
+- 🔢 Improved number formatting (whole numbers displayed without decimal part)
+- 📊 Enhanced currency rate display with rounding to 1 decimal place
+- 🔒 Preserved all improvements from version 1.3.6
 
 ---
 
