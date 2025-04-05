@@ -85,6 +85,15 @@ def round_if_zero(x):
     else:
         return x
 
+def load_multipliers(): #Загрузка множителя курса из файла
+    try:
+        with open(multipliers_file, mode="r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {"buy": 1.057, "sell": 0.99}
+    except json.JSONDecodeError:
+        return {"buy": 1.057, "sell": 0.99}
+
 #-------------------------СПАМ-----------------------------#
 def check_spam(user_id):
     current_time = time.time()
@@ -192,7 +201,7 @@ def instructions(message):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Назад', callback_data='cancel'))
 
-    text = "1. Подаёте заявку на обмен валюты через кнопку <b>«Обмен»</b> в главном меню бота, предварительно ознакомившись с курсом в соответствующем разделе. \nПотребуется предоставить следующую информацию:\n▪️Тип перевода (покупка/продажа)\n▪️Название банка, с которого будет осуществлён перевод\n▪️Сумма\n▪️Реквизиты вашей карты для зачисления средств\n\n2. В ближайшее время я свяжусь с вами для уточнения курса и готовности выполнить перевод. А также предоставлю реквизиты для оплаты.\n\n3. После получения реквизитов, <b>в течение 15 минут</b>, следует отправить средства с указанием комментария к платежу, а также предоставить чек.\n\n4. Деньги поступят на указанные вами в заявке реквизиты в течение 30-60 минут.\n\n5. Как только деньги поступят на ваш счёт, необходимо <b>сразу</b> прислать скрин прихода средств."
+    text = "1. Подаёте заявку на обмен валюты через кнопку <b>«Обмен»</b> в главном меню бота, предварительно ознакомившись с курсом в соответствующем разделе. \nПотребуется предоставить следующую информацию:\n▪️Тип перевода (покупка/продажа)\n▪️Название банка, с которого будет осуществлён перевод\n▪️Сумма\n▪️Реквизиты вашей карты для зачисления средств\n\n2. В ближайшее время я свяжусь с вами для уточнения готовности выполнить перевод и предоставлю реквизиты для оплаты.\n\n3. После получения данных от меня, <b>в течение 15 минут</b>, следует отправить средства с указанием комментария к платежу, а также предоставить чек.\n\n4. Деньги поступят на указанные вами в заявке реквизиты в течение 30-60 минут.\n\n5. Как только деньги поступят на ваш счёт, необходимо <b>сразу</b> прислать скрин прихода средств."
     bot.send_message(message.chat.id, text, parse_mode='html' , reply_markup=keyboard)
 
     delete_the_fucking_message(message) #####
@@ -751,13 +760,9 @@ bot.polling()
 # RUS: Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.4.2 (stable version with exchange rate multiplier management)
-#                                                                                              09.30.2023 23:21 GMT+9
-# Features: for administrators, a button has been added in the main menu to change the rate multiplier, the method of storing 
-#   multipliers in a file has also been revised, a mechanism for changing the multiplier for a specific type of exchange has been 
-#   implemented using the button, the application form has also been corrected, now the user, regardless of the type, always enters 
-#   a number in euros and at the end It shows him how much it will be in rubles, also administrator notifications have been redone and 
-#   in addition to euros, they also display the amount in rubles, taking into account the current exchange rate of the bot
+# version 1.4.5 (stable version with no canceling user_id in administration aborting review)
+#                                                                                              10.03.2023 12:33 GMT+9
+# Features: added a separate course for Arkhip, also slightly modified instructions
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia

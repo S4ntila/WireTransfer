@@ -1,11 +1,11 @@
-# WireTransfer 1.4.2
+# WireTransfer 1.4.5
 
 <p align="center">
   <img src="icon.jpg" alt="WireTransfer Logo" width="200" height="200">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.4.2-blue.svg" alt="Version 1.4.2">
+  <img src="https://img.shields.io/badge/version-1.4.5-blue.svg" alt="Version 1.4.5">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -106,11 +106,11 @@ WireTransfer — это удобный Telegram бот для обработки
 3. **Модерация отзывов**: Одобрение или отклонение отзывов пользователей
 4. **Резервное копирование**: Создание и восстановление резервных копий данных
 
-## 🔄 Обновления в версии 1.4.2
-- 🔧 **Управление курсом обмена**: Администраторы могут изменять множители курса покупки и продажи
-- 📊 **Улучшенный процесс обмена**: Пользователь всегда вводит сумму в евро, а бот автоматически рассчитывает эквивалент в рублях
-- 💾 **Хранение множителей**: Система сохраняет множители курса в отдельном файле для легкой настройки
-- 🔔 **Расширенные уведомления**: Администраторы получают более подробную информацию о заявках с суммами в обеих валютах
+## 🔄 Обновления в версии 1.4.5
+- 🔧 **Улучшенная обработка отзывов**: Исправлена проблема с обработкой ID пользователей при отклонении отзывов администратором
+- 📝 **Обновленные инструкции**: Модифицированы инструкции для более четкого объяснения процесса обмена
+- 🔄 **Улучшенная загрузка множителей**: Добавлены значения по умолчанию при отсутствии файла множителей
+- 👨‍💼 **Дополнительные настройки курса**: Добавлена возможность отдельного управления курсом для определенных пользователей
 
 ---
 
@@ -203,11 +203,11 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 3. **Review Moderation**: Approve or reject user reviews
 4. **Backup**: Create and restore data backups
 
-## 🔄 Updates in Version 1.4.2
-- 🔧 **Exchange Rate Management**: Administrators can change the multipliers for buying and selling rates
-- 📊 **Improved Exchange Process**: Users always enter the amount in euros, and the bot automatically calculates the ruble equivalent
-- 💾 **Multiplier Storage**: The system saves rate multipliers in a separate file for easy configuration
-- 🔔 **Enhanced Notifications**: Administrators receive more detailed information about applications with amounts in both currencies
+## 🔄 Updates in Version 1.4.5
+- 🔧 **Improved Review Processing**: Fixed issue with user ID handling when administrators reject reviews
+- 📝 **Updated Instructions**: Modified instructions for clearer explanation of the exchange process
+- 🔄 **Enhanced Multiplier Loading**: Added default values when multiplier file is missing
+- 👨‍💼 **Additional Rate Settings**: Added ability to manage separate exchange rates for specific users
 
 ---
 
