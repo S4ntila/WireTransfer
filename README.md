@@ -1,126 +1,338 @@
-# Telegram Currency Exchange Bot (v0.2.8)
+# EUR/RUB Exchange Bot v3.0
 
-A Telegram bot for EUR/RUB currency exchange that allows users to check current rates, get exchange instructions, submit exchange requests, and write reviews. The bot features an admin notification system, anti-spam protection, and user-friendly interface with inline keyboards.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-3.0-blue.svg" alt="Version 3.0">
+  <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
+  <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
+</p>
 
-## Features
+A professional Telegram bot for facilitating EUR/RUB currency exchanges with a secure and user-friendly interface. This stable release includes comprehensive admin tools, dynamic currency rates, and enhanced user experience.
 
-- **Real-time Currency Rates**: Fetches and displays current EUR/RUB exchange rates from the Central Bank of Russia with dynamic loading indicators
-- **Exchange Instructions**: Provides detailed instructions on the exchange process
-- **Exchange Functionality**: 
-  - Buy euros with rubles
-  - Sell euros for rubles 
-  - Minimum amounts (100 EUR or 10,000 RUB)
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [System Architecture](#system-architecture)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Admin Guide](#admin-guide)
+- [User Guide](#user-guide)
+- [API Integration](#api-integration)
+- [Security](#security)
+- [Data Management](#data-management)
+- [Troubleshooting](#troubleshooting)
+- [Contact & Support](#contact--support)
+
+## Overview
+
+This Telegram bot facilitates secure currency exchanges between EUR and RUB. Designed with both administrative controls and user-friendly interactions, it provides real-time exchange rates, processes requests, and handles customer reviews all within the Telegram interface.
+
+### Target Users
+
+- Individuals needing to exchange EUR/RUB currencies
+- Businesses providing currency exchange services
+- Administrators managing exchange operations
+
+## Key Features
+
+### Core Functionality
+
+- **Currency Exchange Processing**
+  - Euro purchase (RUB → EUR) with minimum 10,000 RUB
+  - Euro sale (EUR → RUB) with minimum 100 EUR
   - Bank selection (Sberbank, Tinkoff, Raiffeisen)
-- **Review System**:
-  - Users can write reviews after completing an exchange
-  - Users can read reviews from other customers
-  - Admin-only review moderation tools
-- **Admin Management**: 
-  - Special commands and notifications for administrators
-  - Admin-specific interface with additional tools
-  - Support for multiple admin accounts
-  - Data file cleanup functionality
-- **Enhanced User Experience**:
-  - Name validation with regex to ensure correct format
-  - Improved message handling with edit_message_text for dynamic updates
-  - Better error handling for user inputs
-  - Enhanced message history cleanup
-- **User-friendly Interface**: Uses inline keyboards for navigation throughout the bot
-- **Request Cancellation**: Users can return to the main menu at any point in the process
-- **Security**: `/start` command recognition during data entry to allow user to restart
+  - IBAN and personal details collection
 
-## What's New in v2.8
-- Admin-specific interface with additional tools for managing the bot
-- Admin-only review management with the ability to delete inappropriate reviews
-- Improved message handling with edit_message_text for dynamic updates (especially visible in the rate display)
-- Name validation with regex to ensure proper Latin characters
-- More detailed admin notifications with username linking
-- Added file cleanup functionality for administrators
-- Enhanced error handling and user input validation
-- Complete reorganization of function calls for better performance
-- Improved welcome message and user interface
-- Fixed bank selection issues with Raiffeisen Bank
+- **Real-time Exchange Rates**
+  - Dynamic rate fetching from Central Bank of Russia
+  - Custom rate formulation (buy/sell rates)
+  - Loading indicator during rate retrieval
+  - Formatted, readable rate presentation
 
-## Requirements
+- **Review Management**
+  - User-generated reviews with username identification
+  - Admin-only review moderation capabilities
+  - Restricted to customers with completed transactions
+  - Full reviews archive for credibility building
 
-- Python 3.6+
-- telebot (pyTelegramBotAPI)
-- requests
-- json (standard library)
-- time (standard library)
-- re (regular expressions, standard library)
-- os (standard library)
+- **Transaction Instructions**
+  - Detailed step-by-step process guide
+  - Clear timeline expectations (15 min, 30-60 min periods)
+  - Documentation requirements explanation
+
+### Administrative Features
+
+- **Admin Recognition System**
+  - Multi-admin support with unique interfaces
+  - Privileged access to sensitive functions
+  - Admin-specific commands and notifications
+
+- **Data Management Tools**
+  - JSON database file cleanup functionality
+  - User transaction tracking
+  - Review moderation with deletion capability
+  - Notification system for new requests and reviews
+
+- **Security Enhancements**
+  - Input validation with regex patterns
+  - `/start` command recognition during all processes
+  - Message history cleanup to prevent data exposure
+  - Error handling with user-friendly messages
+
+### User Experience
+
+- **Interactive Navigation**
+  - Intuitive inline keyboards
+  - Contextual button presentation
+  - Consistent back/cancel options
+  - Multi-step form with validation
+
+- **Dynamic Content Updates**
+  - Real-time loading indicators
+  - Message editing instead of new messages
+  - Clean message history management
+  - Responsive feedback system
+
+## System Architecture
+
+The bot is structured around these key components:
+
+1. **User State Management**
+   - Class-based state tracking for multi-step processes
+   - Transaction details storage during session
+   - Reset functionality between operations
+
+2. **API Integration**
+   - Central Bank of Russia exchange rate integration
+   - Custom rate calculations for buy/sell operations
+
+3. **Callback System**
+   - Button-based navigation framework
+   - State-aware callbacks for process flow
+
+4. **Data Persistence**
+   - JSON-based storage for user transactions
+   - Review archival system
+   - User identification tracking
+
+5. **Admin Control Panel**
+   - Privileged operations through role-based access
+   - Data management tools
+   - Moderation capabilities
 
 ## Installation
 
-1. Clone the repository or download the script
+### Prerequisites
 
-2. Install the required packages:
-```bash
-pip install pyTelegramBotAPI requests
-```
+- Python 3.6 or higher
+- pip (Python package installer)
+- Telegram account
+- Bot token from BotFather
 
-3. Configure the bot token and admin IDs in the script (see Configuration section)
+### Step-by-Step Setup
 
-4. Run the bot:
-```bash
-python main.py
-```
+1. **Clone or download the repository**
+   ```
+   git clone https://your-repository-url.git
+   cd telegram-exchange-bot
+   ```
+
+2. **Install required packages**
+   ```bash
+   pip install pyTelegramBotAPI requests
+   ```
+
+3. **Configure the bot**
+   - Edit `main.py` to set your bot token:
+     ```python
+     BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+     ```
+   - Set admin IDs:
+     ```python
+     ADMIN_ID = 000000000  # Replace with actual Telegram ID
+     ADMIN_ID2 = 000000000  # Replace with actual Telegram ID
+     ```
+
+4. **Run the bot**
+   ```bash
+   python main.py
+   ```
 
 ## Configuration
 
-The bot requires the following configuration:
+### Essential Settings
 
-- **Bot Token**: Obtained from BotFather on Telegram
-- **Admin IDs**: Telegram user IDs of administrators who will receive notifications and have access to admin tools
-- **Proxy Settings** (optional): HTTP proxy configuration for improved connectivity in regions with restrictions
+- `BOT_TOKEN`: Your Telegram bot token from BotFather
+- `ADMIN_ID` and `ADMIN_ID2`: Telegram user IDs for administrators
+- `admins`: Array of all admin IDs for privilege checks
 
-For production use, it's recommended to store these values as environment variables instead of hardcoding them in the script.
+### Optional Settings
 
-## Usage
+- Proxy configuration for regions with Telegram restrictions
+- Exchange rate multipliers (currently 1.053 for buying, 0.975 for selling)
+- Minimum amounts (10,000 RUB, 100 EUR)
 
-### User Commands
+### File Structure
 
-- `/start` - Start the bot and show the main menu
+- `main.py`: Core bot code
+- `users_id.json`: Tracks user transaction history
+- `users_id_review.json`: Tracks users who submitted reviews
+- `reviews.json`: Stores all user reviews
 
-### Admin Features
+## Admin Guide
 
-1. Special admin interface with additional tools
-2. Review management with ability to delete reviews
-3. Data file cleanup functionality
-4. Detailed notifications about user activities
+### Admin Dashboard
 
-### Exchange Process
+As an admin, you'll receive an enhanced interface with additional options:
 
-1. User selects "Обмен" (Exchange) from the main menu
-2. User chooses transaction type (Buy or Sell)
-3. User selects their bank from available options
-4. User enters the amount (minimum 10,000 RUB for buying or 100 EUR for selling)
-5. User provides their IBAN
-6. User enters their name and surname in Latin characters (with validation)
-7. User confirms or cancels the exchange request
-8. Admin receives notification about the new request with user details
-9. Admin contacts the user to complete the exchange
+1. Access to the standard user interface
+2. File cleanup functionality
+3. Review management capabilities
+4. Notification system for user activities
 
-### Review System
+### Managing Reviews
 
-1. User selects "Отзывы" (Reviews) from the main menu
-2. User can choose to write a review (if they've completed an exchange)
-3. User can choose to read reviews from other customers
-4. Reviews are stored with the username of the reviewer
-5. Admins can delete inappropriate reviews
+1. View reviews by clicking the "Просмотреть отзывы" button
+2. Delete inappropriate reviews by clicking on them
+3. Confirmation will be provided upon deletion
 
-## Data Storage
+### Data Management
 
-The bot uses JSON files to store:
-- User IDs who have completed exchanges (`users_id.json`)
-- User IDs who have left reviews (`users_id_review.json`)
-- Review content (`reviews.json`)
+The "Очистка файлов" button allows admins to reset the following data:
+- Transaction history
+- Review permissions
+- Review content
 
-## License
+### Processing Transactions
 
-This project is available for private use. All rights reserved. 
+1. You will receive notifications of new exchange requests
+2. Contact users via their Telegram username
+3. Follow standard exchange protocols for completing transactions
 
-## Developers
+## User Guide
 
-(C) 2023 Aleksander Samarin, Blagoveshchensk, Russia 
+### Starting the Bot
+
+1. Search for your bot on Telegram
+2. Click "Start" or type `/start`
+3. You'll see the main menu with exchange options
+
+### Checking Exchange Rates
+
+1. Click "Курс" from the main menu
+2. Current EUR/RUB rates will display:
+   - RUB → EUR (buying euros)
+   - EUR → RUB (selling euros)
+
+### Requesting an Exchange
+
+1. Click "Обмен" from the main menu
+2. Select transaction type (Buy/Sell)
+3. Choose your bank (Sberbank, Tinkoff, Raiffeisen)
+4. Enter amount (minimum 10,000 RUB or 100 EUR)
+5. Provide your IBAN
+6. Enter your name and surname (Latin characters only)
+7. Confirm your details
+8. Wait for administrator contact
+
+### Reading Instructions
+
+Click "Инструкция" for detailed steps on the exchange process.
+
+### Managing Reviews
+
+1. Click "Отзывы" from the main menu
+2. Options:
+   - Write a review (only after completing a transaction)
+   - Read other users' reviews
+
+## API Integration
+
+The bot integrates with the Central Bank of Russia API to obtain current exchange rates:
+
+```python
+def get_eur_rub():
+    response = requests.get("https://www.cbr-xml-daily.ru/daily_json.js")
+    if response.status_code == 200:
+        data = response.json()
+        eur_rub = data["Valute"]["EUR"]["Value"]
+        return float(eur_rub)
+    else:
+        return None
+```
+
+Custom rates are calculated based on this data:
+- Buy rate: CBR rate × 1.053
+- Sell rate: CBR rate × 0.975
+
+## Security
+
+### Data Protection
+
+- No sensitive financial data is stored long-term
+- Message history cleanup prevents data exposure
+- Input validation prevents injection attacks
+- IBAN and name information for transaction purposes only
+
+### Access Control
+
+- Role-based permissions for admin functions
+- Multi-step verification for critical operations
+- Restricted review capabilities
+
+## Data Management
+
+### Storage System
+
+The bot uses three JSON files for data persistence:
+
+1. `users_id.json`: Records completed transactions
+2. `users_id_review.json`: Tracks users who have submitted reviews
+3. `reviews.json`: Stores all customer reviews
+
+### Data Formats
+
+Example review storage format:
+```json
+{
+  "123456789": ["✅ @username: Great service, fast exchange! Very satisfied.\n"]
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Bot not responding**
+   - Check your internet connection
+   - Verify bot token is correct
+   - Ensure Python script is running
+
+2. **Can't write reviews**
+   - You must complete a transaction first
+   - You can only submit one review
+
+3. **Exchange rate not showing**
+   - Central Bank API may be temporarily unavailable
+   - Check your internet connection
+
+### Error Messages
+
+- **"Сумма должна быть больше..."**: Minimum amount requirement not met
+- **"Пожалуйста, введите имя и фамилию латиницей"**: Name must be in Latin characters
+- **"Вы уже писали отзыв!"**: You've already submitted a review
+
+## Contact & Support
+
+For technical support or inquiries:
+
+- **Developer**: Aleksander Samarin
+- **Location**: Blagoveshchensk, Russia
+- **Year**: 2023
+
+---
+
+<p align="center">
+  <strong>© 2023 Aleksander Samarin. All rights reserved.</strong><br>
+  This software is provided for private use only. Redistribution or modification without explicit permission is prohibited.
+</p> 
