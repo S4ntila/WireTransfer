@@ -1,7 +1,7 @@
-# EUR/RUB Exchange Bot v3.0
+# EUR/RUB Exchange Bot v0.3.1
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-3.0-blue.svg" alt="Version 3.0">
+  <img src="https://img.shields.io/badge/version-0.3.1-blue.svg" alt="Version 0.3.1">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
