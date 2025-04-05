@@ -40,6 +40,7 @@ user_state = UserState()
 userID_file = "users_id.json"
 userID_file_review = "users_id_review.json"
 reviews_file = "reviews.json"
+reviews_file_confirm = "reviews_confirm.json"
 
 #-------------------------СБРОС-ДАННЫХ-ПОЛЬЗОВАТЕЛЯ----------------------------#
 def reset_user_state():
@@ -84,20 +85,33 @@ def check_spam(user_id):
         return True
 #-----------------------------------УДАЛЕНИЕ------------------------------------#
 def delete_user_info_about(message):
-    os.remove("users_id.json")
-    os.remove("users_id_review.json")
-    os.remove("reviews.json")
+    try:
+        os.remove("users_id.json")
+    except:
+        print("Файл users_id.json не был создан, чтобы его удалять")
+    try:
+        os.remove("users_id_review.json")
+    except:
+        print("Файл users_id_review.json не был создан, чтобы его удалять")
+    try:
+        os.remove("reviews.json")
+    except:
+        print("Файл reviews.json не был создан, чтобы его удалять")
+    try:
+        os.remove("reviews_confirm.json")
+    except:
+        print("Файл reviews_confirm.json не был создан, чтобы его удалять")
     
 def clean_message_history(message): # Функция для очистки истории сообщений
     try:
         for i in range(1, 101):
             bot.delete_message(chat_id=message.chat.id, message_id=message.message_id - i)
     except:
-        print("Ошибка при удалении сообщений")
+        print("Удаление: Гипер Перегрузка")
     try:
         bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
     except:
-        print("Ошибка при удалении текущего сообщения")
+        print("Удаление: Перегрузка")
 
 def send_and_delete(message, text): #не используется
     sent_message = bot.send_message(message.chat.id, text)
@@ -107,15 +121,16 @@ def send_and_delete(message, text): #не используется
 def start_screen(message):
     reset_user_state() # Сброс данных пользователя
     bot.clear_step_handler_by_chat_id(message.chat.id) # Очистка буфера сообщений
-    user_state.username = message.from_user.username
     user_state.user_id = message.chat.id
     keyboard = types.InlineKeyboardMarkup()
     if is_admin(user_state.user_id):
+        print("Вы зашли как Администратор")
         keyboard.add(types.InlineKeyboardButton('Обмен', callback_data='exchange'))
         keyboard.add(types.InlineKeyboardButton('Инструкция', callback_data='instructions'), types.InlineKeyboardButton('Отзывы', callback_data='reviews'))
         keyboard.add(types.InlineKeyboardButton('Курс', callback_data='rate'))
         keyboard.add(types.InlineKeyboardButton('Очистка файлов', callback_data='delete_all'))
     else:
+        print("Обычный пользователь зашёл в главное меню")
         keyboard.add(types.InlineKeyboardButton('Обмен', callback_data='exchange'))
         keyboard.add(types.InlineKeyboardButton('Инструкция', callback_data='instructions'), types.InlineKeyboardButton('Отзывы', callback_data='reviews'))
         keyboard.add(types.InlineKeyboardButton('Курс', callback_data='rate'))
@@ -178,15 +193,16 @@ def confirm_check_reviews(message):
     if user_id not in user_reviews:
         user_reviews[user_id] = []
 
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('Опубликовать', callback_data='confirm_review_by_admin'))
     user_reviews[user_id] = [f"✅ @{message.from_user.username}: {text}\n"]
-    save_reviews()
     
-    bot.send_message(ADMIN_ID, f"Пользователь @{message.from_user.username} оставил свой отзыв: {text}")
+    bot.send_message(ADMIN_ID, f"Пользователь @{message.from_user.username} оставил свой отзыв: {text}", reply_markup=keyboard)
 
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
     
-    bot.send_message(message.chat.id, "Твой отзыв был принят! 🙏\nСпасибо тебе за обратную связь, с тобой очень приятно вести дела! 😊\n", reply_markup=keyboard)
+    bot.send_message(message.chat.id, "Спасибо за ваш отзыв! 😊\n", reply_markup=keyboard)
     save_user_id_review(message.chat.id)
 
     clean_message_history(message)
@@ -205,27 +221,6 @@ def reviews_read(message):
     else:
         bot.send_message(message.chat.id, "Пока еще нет ни одного отзыва о моей работе. 😢", reply_markup=keyboard)
     
-def reviews_read_admin(message):
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton('Написать отзыв', callback_data='write'), types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
-    user_reviews = load_reviews()
-    if user_reviews:
-        reviews_text = ""
-        for user_id, reviews in user_reviews.items():
-            for review in reviews:
-                keyboard.add(types.InlineKeyboardButton(review, callback_data=f'delete_review:{user_id}'))
-        bot.send_message(message.chat.id, f"Вот что пишут о моей работе другие пользователи:\n\n{reviews_text}", reply_markup=keyboard)
-    else:
-        bot.send_message(message.chat.id, "Пока еще нет ни одного отзыва о моей работе.", reply_markup=keyboard)
-
-def delete_review(call):
-    user_id = call.data.split(':')[1]
-    user_reviews = load_reviews()
-    del user_reviews[user_id]
-    save_reviews()
-    bot.send_message(call.message.chat.id, f"Отзыв пользователя {user_id} был успешно удален! 🗑️")
-    reviews_read_admin(call.message)
-
 def exchange_type(message):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Покупка', callback_data='Покупка'), types.InlineKeyboardButton('Продажа', callback_data='Продажа'))
@@ -256,18 +251,18 @@ def amount_check(message):
     try:
         amount = int(message.text)
         if user_state.type == 'Покупка':
-            if amount >= 10000 and amount <= 500000:
+            if amount >= 10000 and amount <= 100000000:
                 user_state.amount = amount
                 iban_input(message)
             else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 10000 рублей и не больше 500000 рублей. Попробуй еще раз.')
+                bot.send_message(message.chat.id, 'Сумма должна быть больше 10000 рублей. Попробуй еще раз.')
                 amount_input(message)
         else:
-            if amount >= 100 and amount <= 5000:
+            if amount >= 100 and amount <= 1000000:
                 user_state.amount = amount
                 iban_input(message)
             else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро и не больше 5000 евро. Попробуй еще раз.')
+                bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро. Попробуй еще раз.')
                 amount_input(message)
     except:
         if message.text == '/start':
@@ -332,6 +327,8 @@ def confirm_exit(message):
     print(user_state.user_id)
 
 def confirm_screen(message):
+    user_state.username = message.from_user.username
+    print(user_state.username)
     clean_message_history(message)
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Подтвердить', callback_data='confirm'), types.InlineKeyboardButton('Отмена', callback_data='cancel'))
@@ -378,14 +375,11 @@ def callback_query(call):
         reviews_write(call.message)
         clean_message_history(call.message)
     elif data == 'read':
-        if is_admin(user_state.user_id):
-            reviews_read_admin(call.message)
-        else:
-            reviews_read(call.message)
+        reviews_read(call.message)
         clean_message_history(call.message)
-    elif data == 'edit_review':
-        bot.send_message(call.message.chat.id, "Напиши свой отзыв о моей работе. Я буду рад услышать твое мнение. 😊")
-        bot.register_next_step_handler(call.message, confirm_check_reviews)
+
+    elif data == 'confirm_review_by_admin':
+        save_reviews(message)
 
     elif data == 'delete_all':
         delete_user_info_about(call.message)
@@ -475,5 +469,5 @@ def check_user_id_review(user_id):
 bot.polling()
 # -----------------------------------------------------------
 # Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# version 3.1 (stable version - added upper transaction limits)
+# version 3.2 (stable version - added admin review approval system and increased transaction limits)
 # -----------------------------------------------------------
