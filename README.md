@@ -1,11 +1,11 @@
-# WireTransfer 1.4.6
+# WireTransfer 1.5.0
 
 <p align="center">
   <img src="icon.jpg" alt="WireTransfer Logo" width="200" height="200">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.4.6-blue.svg" alt="Version 1.4.6">
+  <img src="https://img.shields.io/badge/version-1.5.0-blue.svg" alt="Version 1.5.0">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -106,11 +106,11 @@ WireTransfer — это удобный Telegram бот для обработки
 3. **Модерация отзывов**: Одобрение или отклонение отзывов пользователей
 4. **Резервное копирование**: Создание и восстановление резервных копий данных
 
-## 🔄 Обновления в версии 1.4.6
-- 🔧 **Исправлена обработка ID пользователей**: Исправлена проблема с обработкой ID пользователей при отклонении отзывов администратором
-- 🛡️ **Улучшенная стабильность системы**: Увеличена надежность работы с пользовательскими данными
-- 📝 **Оптимизированная работа с отзывами**: Улучшена работа системы модерации отзывов
-- 🔄 **Техническое обслуживание**: Обновлен код для обеспечения лучшей производительности
+## 🔄 Обновления в версии 1.5.0
+- 📊 **Улучшенная система получения курса валют**: Теперь данные берутся с платформы Binance для более точных курсов
+- 🔄 **Двухэтапное получение курса**: Курс EUR/RUB рассчитывается через USD с использованием актуальных рыночных данных 
+- 🛡️ **Обновлены алгоритмы расчета**: Скорректированы множители для более точного отображения реальных курсов
+- 🚀 **Повышена производительность**: Оптимизирован код для более быстрого получения и обработки данных о курсах
 
 ---
 
@@ -203,11 +203,11 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 3. **Review Moderation**: Approve or reject user reviews
 4. **Backup**: Create and restore data backups
 
-## 🔄 Updates in Version 1.4.6
-- 🔧 **Fixed User ID Processing**: Fixed issue with user ID handling when administrators reject reviews
-- 🛡️ **Enhanced System Stability**: Increased reliability of user data management
-- 📝 **Optimized Review Processing**: Improved review moderation system
-- 🔄 **Technical Maintenance**: Updated code to ensure better performance
+## 🔄 Updates in Version 1.5.0
+- 📊 **Improved Exchange Rate System**: Data is now sourced from Binance platform for more accurate rates
+- 🔄 **Two-Stage Rate Retrieval**: EUR/RUB rate is calculated through USD using up-to-date market data
+- 🛡️ **Updated Calculation Algorithms**: Adjusted multipliers for more accurate representation of real rates
+- 🚀 **Enhanced Performance**: Optimized code for faster exchange rate data retrieval and processing
 
 ---
 

@@ -55,14 +55,24 @@ def reset_user_state():
     user_state.username = None
 
 #-------------------------КУРС-----------------------------#
-def get_eur_rub(): # Получаем курс от API Центробанка России
-    response = requests.get("https://www.cbr-xml-daily.ru/daily_json.js")
-    if response.status_code == 200:
-        data = response.json()
-        eur_rub = data["Valute"]["EUR"]["Value"]
-        return float(eur_rub)
-    else:
-        return None
+def get_eur_rub(): # Получаем курс от API Binance
+    response = requests.get("https://www.binance.com/bapi/asset/v2/public/asset-service/product/get-products?includeEtf=true").json()
+    
+    products = response["data"]
+    for product in products:
+        if product["s"] == "USDTRUB":
+            usd = float(product["c"])
+            print(usd)
+            break
+
+    products = response["data"]
+    for product in products:
+        if product["s"] == "EURUSDT":
+            eur = float(product["c"])
+            print(eur)
+            break
+
+    return float(usd * eur)
     
 def get_eur_rub_rate(type): # Подгоняем под нужный курс
     multipliers = load_multipliers() # загружаем множители из файла
@@ -90,9 +100,9 @@ def load_multipliers(): #Загрузка множителя курса из ф�
         with open(multipliers_file, mode="r") as file:
             return json.load(file)
     except FileNotFoundError:
-        return {"buy": 1.057, "sell": 0.99}
+        return {"buy": 1.055, "sell": 1}
     except json.JSONDecodeError:
-        return {"buy": 1.057, "sell": 0.99}
+        return {"buy": 1.055, "sell": 1}
 
 #-------------------------СПАМ-----------------------------#
 def check_spam(user_id):
@@ -760,9 +770,11 @@ bot.polling()
 # RUS: Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.4.6 (stable version with no canceling user_id in administration aborting review)
-#                                                                                              10.07.2023 22:16 GMT+9
-# Features: ---
+# version 1.5.0 (stable version with new rate from Binance, no canceling user_id in administration aborting review)
+#                                                                                              29.07.2023 9:41 GMT+9
+# Features: The collection of rate information has been redone: now the data is taken from two sites, first the dollar to ruble 
+#   exchange rate from the Binance platform, then this value is multiplied by the euro to dollar rate from the official Binance rate
+#
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
