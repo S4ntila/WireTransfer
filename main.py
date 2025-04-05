@@ -12,14 +12,14 @@ from telebot import types
 #from telebot import apihelper
 #apihelper.proxy = {'http':'http://127.0.0.1:3128'}
 #-------------------------ГЛОБАЛЬНЫЕ-ПЕРЕМЕННЫЕ---------------------------#
-BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+BOT_TOKEN = "7574653143:AAGjFy3nxp_Att6Iap_dnOT-M172xhlgL6M"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-ADMIN_ID = 000000000 # Основной администратор
-ADMIN_ID2 = 000000000 # Дополнительный администратор
+ADMIN_ID = 1646373003 # Основной администратор (Александр)
+ADMIN_ID2 = 429952675 # Дополнительный администратор (Иван)
 
-admins = [ADMIN_ID]
+admins = [ADMIN_ID, ADMIN_ID2]
 
 def is_admin(user_id):
     return user_id in admins
@@ -56,20 +56,18 @@ def reset_user_state():
 
 #-------------------------КУРС-----------------------------#
 def get_eur_rub(): # Получаем курс от API Binance
-    response = requests.get("https://www.binance.com/bapi/asset/v2/public/asset-service/product/get-products?includeEtf=true").json()
-    
-    products = response["data"]
-    for product in products:
-        if product["s"] == "USDTRUB":
-            usd = float(product["c"])
-            print(usd)
-            break
+    response1 = requests.get("https://alfabit.org/api/v1/cashe/operations/detail/%D0%A1%D0%B1%D0%B5%D1%80%D0%B1%D0%B0%D0%BD%D0%BA(RUB)/Tether(USDT)%20TRC20").json()
+    products = response1["rate_data"]
+    usd = float(products["value"])
+    usd = round_if_zero(usd)
+    #print(usd)
 
-    products = response["data"]
+    response2 = requests.get("https://www.binance.com/bapi/asset/v2/public/asset-service/product/get-products?includeEtf=true").json()
+    products = response2["data"]
     for product in products:
         if product["s"] == "EURUSDT":
             eur = float(product["c"])
-            print(eur)
+            #print(eur)
             break
 
     return float(usd * eur)
@@ -401,10 +399,10 @@ def confirm_exit(message): # ПРОЦЕСС ПОДТВЕРЖДЕНИЯ ЗАЯВ�
 
     if user_state.type == "Покупка":
         bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR \nСумма обмена в рублях: {round_if_zero(user_state.amount * get_eur_rub_rate('Покупка'))} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
-        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Покупка'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+        #bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Покупка'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
     else:
         bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR \nСумма обмена в рублях: {round_if_zero(user_state.amount * get_eur_rub_rate('Продажа'))} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
-        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Продажа'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+        #bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b> (<b>{round_if_zero(user_state.amount * get_eur_rub_rate('Продажа'))} руб.</b>)\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
 
     delete_the_fucking_message(message) #####
     
@@ -770,14 +768,14 @@ bot.polling()
 # RUS: Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.5.0 (stable version with new rate from Binance, no canceling user_id in administration aborting review)
-#                                                                                              29.07.2023 9:41 GMT+9
+# version 1.5.2 (stable version with new rate from Binance, no canceling user_id in administration aborting review)
+#                                                                                              09.01.2024 0:38 GMT+9
 # Features: The collection of rate information has been redone: now the data is taken from two sites, first the dollar to ruble 
-#   exchange rate from the Binance platform, then this value is multiplied by the euro to dollar rate from the official Binance rate
+#   exchange rate from the alfabit.org platform, then this value is multiplied by the euro to dollar rate from the official Binance rate
 #
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
-# (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
+# (C) 2024 Aleksander Samarin, Blagoveshchensk, Russia
 # Powered by RSantila 
 # email ssaannttiillaa@gmail.com
 # telegram @RSantila

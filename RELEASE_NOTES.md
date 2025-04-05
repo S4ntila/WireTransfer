@@ -1,7 +1,45 @@
+# 💱 WireTransfer 1.5.2 (09.01.2024)
+
+<p align="center">
+  <img src="icon.png" alt="WireTransfer Logo" width="180" height="180" style="border-radius: 15px;">
+</p>
+
+## 🇷🇺 Обновления в версии 1.5.2
+
+### 🌟 Новые возможности:
+- Переход на платформу **Alfabit.org** для получения курса доллара к рублю
+- Обновлен алгоритм вычисления курса евро-рубль через промежуточные курсы
+- Актуализирован токен бота для повышенной безопасности
+- Оптимизирована система уведомлений для администраторов
+- Улучшены множители курсов для более точных расчетов
+
+### 📚 Технические изменения:
+- Функция `get_eur_rub()` теперь получает USD/RUB с Alfabit.org и EUR/USD с Binance
+- Обновлена система уведомлений администраторов в функции `confirm_exit()`
+- Улучшена обработка ошибок при получении курсов валют
+- Обновлен токен бота и идентификаторы администраторов
+- Оптимизирован код для более стабильной работы с API внешних сервисов
+
+## 🇬🇧 Updates in Version 1.5.2
+
+### 🌟 New Features:
+- Switched to **Alfabit.org** platform for USD to RUB exchange rate
+- Updated EUR-RUB calculation algorithm using intermediate rates
+- Updated bot token for increased security
+- Optimized notification system for administrators
+- Improved rate multipliers for more accurate calculations
+
+### 📚 Technical Changes:
+- The `get_eur_rub()` function now fetches USD/RUB from Alfabit.org and EUR/USD from Binance
+- Updated administrator notification system in the `confirm_exit()` function
+- Improved error handling when retrieving exchange rates
+- Updated bot token and administrator IDs
+- Optimized code for more stable interaction with external service APIs
+
 # WireTransfer: История изменений / Release Notes
 
 <p align="center">
-  <img src="icon.jpg" alt="WireTransfer Logo" width="150" height="150">
+  <img src="icon.png" alt="WireTransfer Logo" width="150" height="150">
 </p>
 
 ## Версия 1.5.0 / Version 1.5.0 (29.07.2023)
