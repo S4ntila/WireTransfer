@@ -1,4 +1,4 @@
-# Telegram Currency Exchange Bot (v2.3)
+# Telegram Currency Exchange Bot (v0.2.3)
 
 A Telegram bot for EUR/RUB currency exchange that allows users to check current rates, get exchange instructions, submit exchange requests, and write reviews. The bot features an admin notification system, anti-spam protection, and user-friendly interface with inline keyboards.
 
