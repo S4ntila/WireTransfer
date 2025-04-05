@@ -1,12 +1,12 @@
-# EUR/RUB Exchange Bot v0.3.2
+# EUR/RUB Exchange Bot v0.3.3
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.3.2-blue.svg" alt="Version 0.3.2">
+  <img src="https://img.shields.io/badge/version-0.3.3-blue.svg" alt="Version 0.3.3">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
 
-A professional Telegram bot for facilitating EUR/RUB currency exchanges with a secure and user-friendly interface. This stable release includes comprehensive admin tools, dynamic currency rates, and enhanced user experience.
+A professional Telegram bot for facilitating EUR/RUB currency exchanges with a secure and user-friendly interface. This stable release includes comprehensive admin tools, dynamic currency rates, enhanced review confirmation system, and improved user experience.
 
 ## 📋 Table of Contents
 
@@ -42,6 +42,7 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
   - Euro sale (EUR → RUB) with minimum 100 EUR
   - Bank selection (Sberbank, Tinkoff, Raiffeisen)
   - IBAN and personal details collection
+  - High transaction limits (up to 100,000,000 RUB and 1,000,000 EUR)
 
 - **Real-time Exchange Rates**
   - Dynamic rate fetching from Central Bank of Russia
@@ -49,9 +50,10 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
   - Loading indicator during rate retrieval
   - Formatted, readable rate presentation
 
-- **Review Management**
+- **Enhanced Review Management**
   - User-generated reviews with username identification
-  - Admin-only review moderation capabilities
+  - Admin approval system for review moderation
+  - Review confirmation workflow with dedicated storage
   - Restricted to customers with completed transactions
   - Full reviews archive for credibility building
 
@@ -66,6 +68,12 @@ This Telegram bot facilitates secure currency exchanges between EUR and RUB. Des
   - Multi-admin support with unique interfaces
   - Privileged access to sensitive functions
   - Admin-specific commands and notifications
+
+- **Review Approval System**
+  - Dedicated interface for review moderation
+  - User-specific approval buttons for better tracking
+  - Notification system for new review submissions
+  - Separate storage for pending and approved reviews
 
 - **Data Management Tools**
   - JSON database file cleanup functionality
@@ -109,16 +117,17 @@ The bot is structured around these key components:
 3. **Callback System**
    - Button-based navigation framework
    - State-aware callbacks for process flow
+   - Enhanced callbacks with parameter passing
 
 4. **Data Persistence**
    - JSON-based storage for user transactions
-   - Review archival system
+   - Two-stage review system (pending and approved)
    - User identification tracking
 
 5. **Admin Control Panel**
    - Privileged operations through role-based access
    - Data management tools
-   - Moderation capabilities
+   - Review approval capabilities
 
 ## Installation
 
@@ -171,13 +180,15 @@ The bot is structured around these key components:
 - Proxy configuration for regions with Telegram restrictions
 - Exchange rate multipliers (currently 1.053 for buying, 0.975 for selling)
 - Minimum amounts (10,000 RUB, 100 EUR)
+- Maximum amounts (100,000,000 RUB, 1,000,000 EUR)
 
 ### File Structure
 
 - `main.py`: Core bot code
 - `users_id.json`: Tracks user transaction history
 - `users_id_review.json`: Tracks users who submitted reviews
-- `reviews.json`: Stores all user reviews
+- `reviews.json`: Stores approved user reviews
+- `reviews_confirm.json`: Stores pending reviews awaiting approval
 
 ## Admin Guide
 
@@ -187,21 +198,22 @@ As an admin, you'll receive an enhanced interface with additional options:
 
 1. Access to the standard user interface
 2. File cleanup functionality
-3. Review management capabilities
+3. Review approval capabilities
 4. Notification system for user activities
 
 ### Managing Reviews
 
-1. View reviews by clicking the "Просмотреть отзывы" button
-2. Delete inappropriate reviews by clicking on them
-3. Confirmation will be provided upon deletion
+1. When a user submits a review, you'll receive a notification with their message
+2. You can approve the review by clicking the "Опубликовать" button
+3. Once approved, the review will be visible to all users
+4. You'll receive confirmation when the review is published
 
 ### Data Management
 
 The "Очистка файлов" button allows admins to reset the following data:
 - Transaction history
 - Review permissions
-- Review content
+- Approved and pending reviews
 
 ### Processing Transactions
 
@@ -244,7 +256,9 @@ Click "Инструкция" for detailed steps on the exchange process.
 1. Click "Отзывы" from the main menu
 2. Options:
    - Write a review (only after completing a transaction)
-   - Read other users' reviews
+   - Read approved user reviews
+3. After submitting a review, it will be sent to administrators for approval
+4. Once approved, your review will be visible to all users
 
 ## API Integration
 
@@ -288,51 +302,10 @@ The bot uses three JSON files for data persistence:
 
 1. `users_id.json`: Records completed transactions
 2. `users_id_review.json`: Tracks users who have submitted reviews
-3. `reviews.json`: Stores all customer reviews
+3. `reviews.json`: Stores approved user reviews
+4. `reviews_confirm.json`: Stores pending reviews awaiting approval
 
 ### Data Formats
 
 Example review storage format:
-```json
-{
-  "123456789": ["✅ @username: Great service, fast exchange! Very satisfied.\n"]
-}
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Bot not responding**
-   - Check your internet connection
-   - Verify bot token is correct
-   - Ensure Python script is running
-
-2. **Can't write reviews**
-   - You must complete a transaction first
-   - You can only submit one review
-
-3. **Exchange rate not showing**
-   - Central Bank API may be temporarily unavailable
-   - Check your internet connection
-
-### Error Messages
-
-- **"Сумма должна быть больше..."**: Minimum amount requirement not met
-- **"Пожалуйста, введите имя и фамилию латиницей"**: Name must be in Latin characters
-- **"Вы уже писали отзыв!"**: You've already submitted a review
-
-## Contact & Support
-
-For technical support or inquiries:
-
-- **Developer**: Aleksander Samarin
-- **Location**: Blagoveshchensk, Russia
-- **Year**: 2023
-
----
-
-<p align="center">
-  <strong>© 2023 Aleksander Samarin. All rights reserved.</strong><br>
-  This software is provided for private use only. Redistribution or modification without explicit permission is prohibited.
-</p> 
