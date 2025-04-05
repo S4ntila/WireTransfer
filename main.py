@@ -84,7 +84,7 @@ def check_spam(user_id):
     else:
         return True
 #-----------------------------------УДАЛЕНИЕ------------------------------------#
-def delete_user_info_about(message):
+def delete_user_info_about(message): # Чистка файлов
     try:
         os.remove("users_id.json")
     except:
@@ -121,6 +121,7 @@ def send_and_delete(message, text): #не используется
 def start_screen(message):
     reset_user_state() # Сброс данных пользователя
     bot.clear_step_handler_by_chat_id(message.chat.id) # Очистка буфера сообщений
+
     user_state.user_id = message.chat.id
     keyboard = types.InlineKeyboardMarkup()
     if is_admin(user_state.user_id):
@@ -138,6 +139,8 @@ def start_screen(message):
     bot.send_message(message.chat.id, 'Добро пожаловать в сервис по обмену валют 💱\n', reply_markup=keyboard)
 
 def rate(message):
+    print("Пользователь смотрит курс")
+    
     text_msg = "Загрузка курса⌛"
     msg = bot.send_message(message.chat.id, text_msg)
 
@@ -157,6 +160,7 @@ def rate(message):
     bot.edit_message_text(chat_id=message.chat.id, message_id=msg.message_id, text=text_msg, parse_mode='html', reply_markup=keyboard)
 
 def instructions(message):
+    print("Пользователь смотрит инструкцию")
     clean_message_history(message)
 
     keyboard = types.InlineKeyboardMarkup()
@@ -166,6 +170,7 @@ def instructions(message):
     bot.send_message(message.chat.id, text, parse_mode='html' , reply_markup=keyboard)
 
 def reviews(message):
+    print("Пользователь зашёл в меню отзывов")
     clean_message_history(message)
 
     keyboard = types.InlineKeyboardMarkup()
@@ -194,7 +199,7 @@ def confirm_check_reviews(message):
         user_reviews[user_id] = []
 
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton('Опубликовать', callback_data='confirm_review_by_admin'))
+    keyboard.add(types.InlineKeyboardButton('Опубликовать', callback_data=f'confirm_review_by_admin:{user_id}'))
     user_reviews[user_id] = [f"✅ @{message.from_user.username}: {text}\n"]
     
     bot.send_message(ADMIN_ID, f"Пользователь @{message.from_user.username} оставил свой отзыв: {text}", reply_markup=keyboard)
@@ -204,8 +209,16 @@ def confirm_check_reviews(message):
     
     bot.send_message(message.chat.id, "Спасибо за ваш отзыв! 😊\n", reply_markup=keyboard)
     save_user_id_review(message.chat.id)
+    save_reviews_confirm()
 
     clean_message_history(message)
+
+def confirm_review_by_admin(call, user_id):
+    user_reviews = load_reviews_confirm()
+    review = user_reviews[user_id][0]
+    save_reviews()
+    delete_review_confirm(user_id)
+    bot.send_message(call.message.chat.id, f"Отзыв пользователя @{bot.get_chat_member(user_id, user_id).user.username} был успешно опубликован! 🎉")
 
 def reviews_read(message):
     keyboard = types.InlineKeyboardMarkup()
@@ -378,8 +391,9 @@ def callback_query(call):
         reviews_read(call.message)
         clean_message_history(call.message)
 
-    elif data == 'confirm_review_by_admin':
-        save_reviews(message)
+    elif data.startswith('confirm_review_by_admin:'):
+        user_id = data.split(':')[1]
+        confirm_review_by_admin(call, user_id)
 
     elif data == 'delete_all':
         delete_user_info_about(call.message)
@@ -389,15 +403,15 @@ def callback_query(call):
         clean_message_history(call.message)
         start_screen(call.message)
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('delete_review'))
-def callback_delete_review(call):
-    delete_review(call)
-
 #------------------------------------------ОТЗЫВЫ-------------------------------# 
 def save_reviews():
     with open(reviews_file, mode="w") as file:
         json.dump(user_reviews, file)
         
+def save_reviews_confirm():
+    with open(reviews_file_confirm, mode="w") as file:
+        json.dump(user_reviews, file)
+
 def load_reviews():
     try:
         with open(reviews_file, mode="r") as file:
@@ -406,6 +420,21 @@ def load_reviews():
         return {}
     except json.JSONDecodeError:
         return {}
+    
+def load_reviews_confirm():
+    try:
+        with open(reviews_file_confirm, mode="r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+    except json.JSONDecodeError:
+        return {}
+
+def delete_review_confirm(user_id):
+    user_reviews = load_reviews_confirm()
+    del user_reviews[user_id]
+    save_reviews_confirm()
+
 #----------------------СОХРАНЕНИЯ-И-УДАЛЕНИЕ-МЕТРИКИ------------------------------#
 def save_user_id(user_id):
     try:
@@ -469,5 +498,5 @@ def check_user_id_review(user_id):
 bot.polling()
 # -----------------------------------------------------------
 # Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# version 3.2 (stable version - added admin review approval system and increased transaction limits)
+# version 3.3 (stable version - enhanced review confirmation system)
 # -----------------------------------------------------------
