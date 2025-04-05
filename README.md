@@ -1,11 +1,11 @@
-# WireTransfer
+# WireTransfer 1.3.6
 
 <p align="center">
   <img src="icon.jpg" alt="WireTransfer Logo" width="200" height="200">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.5-blue.svg" alt="Version 1.3.5">
+  <img src="https://img.shields.io/badge/version-1.3.6-blue.svg" alt="Version 1.3.6">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -18,118 +18,256 @@
 ---
 
 <a id="rus"></a>
-## 🇷🇺 Телеграм-бот для обмена валюты EUR/RUB
+# 🇷🇺 WireTransfer: Телеграм-бот для обмена валюты
 
-### 📝 Описание
-Профессиональный Telegram-бот для обработки обменных операций между евро и рублями. WireTransfer обеспечивает безопасный и удобный интерфейс для пользователей, включает инструменты администрирования, отображение актуальных курсов валют и усовершенствованную систему отзывов.
+## 📋 Обзор
+WireTransfer — это удобный Telegram бот для обработки операций обмена между евро и рублями. Бот разработан для безопасной и эффективной обработки валютных операций с интуитивно понятным интерфейсом.
 
-### 🚀 Основные функции
-- **Обмен валюты**: Покупка/продажа евро с минимальными суммами от 10 000 RUB или 100 EUR
-- **Актуальные курсы**: Динамическое получение курсов от ЦБ РФ с наценкой
-- **Улучшенная система отзывов**: Отзывы пользователей с модерацией администратором (одобрение/отклонение)
-- **Банки**: Поддержка операций через Сбербанк, Тинькофф, Райффайзен
-- **Оптимизация для мобильных устройств**: Улучшенное удаление сообщений для мобильных пользователей
-- **Резервное копирование**: Автоматическое создание резервных копий данных и возможность восстановления
+## ✨ Основные возможности
+- 💱 **Обмен валюты**: Простой интерфейс для покупки или продажи евро
+- 📊 **Актуальные курсы**: Автоматическое получение курсов валют от ЦБ РФ
+- 🔄 **Подтверждение операций**: Двухэтапная система подтверждения для безопасности
+- 📝 **Система отзывов**: Возможность оставить и просмотреть отзывы с модерацией
+- 🔄 **Резервное копирование**: Сохранение данных пользователей и их восстановление
 
-### ⚙️ Установка
-1. Скачайте готовый exe-файл из [последнего релиза](https://github.com/yourusername/wiretransfer/releases) или
-2. Установите вручную:
-   - Клонировать репозиторий
-   - Установить зависимости: `pip install pyTelegramBotAPI requests`
-   - Настроить токен бота и ID администраторов в `main.py`
-   - Запустить бот: `python main.py`
+## 🚀 Подробная инструкция по установке
 
-### 👤 Руководство пользователя
-1. **Запрос обмена**: 
-   - Выберите "Обмен" → Тип операции → Банк → Введите сумму → IBAN → Имя/фамилия
-   - Подтвердите детали и ожидайте связи с администратором
+### Метод 1: Запуск из исходного кода (Рекомендуется для разработчиков)
 
-2. **Проверка курса**:
-   - Нажмите "Курс" для просмотра актуальных ставок обмена
+1. **Клонирование репозитория**
+   ```bash
+   git clone https://github.com/yourusername/wiretransfer.git
+   cd wiretransfer
+   ```
 
-3. **Отзывы**:
-   - Оставьте отзыв после совершения обмена
-   - Просмотрите отзывы других пользователей
+2. **Установка зависимостей**
+   ```bash
+   pip install pyTelegramBotAPI requests
+   ```
+   или с помощью файла requirements.txt:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 👨‍💼 Панель администратора
-- Модерация отзывов (одобрение/отклонение)
-- Просмотр заявок на обмен
-- Просмотр данных пользователей
-- Очистка системных файлов
-- Создание и восстановление резервных копий данных
+3. **Настройка конфигурации**
+   - Откройте файл `main.py` в текстовом редакторе
+   - Замените `YOUR_BOT_TOKEN_HERE` на токен бота, полученный от [@BotFather](https://t.me/BotFather)
+   - Установите ID администраторов (`ADMIN_ID` и `ADMIN_ID2`) — это Telegram ID пользователей, которые будут иметь права администратора
 
-### 🆕 Что нового в версии 1.3.5
-- Добавлена функция резервного копирования и восстановления файлов данных
-- Сохранены все функции версии 1.3.1
-- Улучшен интерфейс администратора с новыми кнопками
-- Обновлена документация об известных проблемах
+4. **Создание директории для бэкапов**
+   ```bash
+   mkdir backup
+   ```
 
-Подробности смотрите в [RELEASE_NOTES.md](RELEASE_NOTES.md)
+5. **Инициализация файлов данных**
+   Создайте пустые JSON файлы:
+   ```bash
+   echo "{}" > users_id.json
+   echo "{}" > users_id_review.json
+   echo "{}" > reviews.json
+   echo "{}" > reviews_confirm.json
+   ```
 
-### 🔒 Безопасность
-- Валидация входных данных
-- Очистка истории сообщений
-- Проверка имени латиницей
-- Хранение минимума необходимых данных
-- Резервное копирование данных
+6. **Запуск бота**
+   ```bash
+   python main.py
+   ```
+
+### Метод 2: Установка исполняемого файла (Для обычных пользователей)
+
+1. **Скачайте готовый .exe файл**
+   - Перейдите на страницу [последних релизов](https://github.com/yourusername/wiretransfer/releases)
+   - Скачайте файл `WireTransfer1.3.6.exe`
+
+2. **Создайте рабочую директорию**
+   - Создайте новую папку, например, `WireTransfer`
+   - Поместите скачанный `.exe` файл в эту папку
+
+3. **Настройка конфигурации**
+   - Создайте файл `config.ini` в той же папке со следующим содержимым:
+     ```ini
+     [Bot]
+     token=YOUR_BOT_TOKEN_HERE
+     admin_id=YOUR_ADMIN_ID
+     admin_id2=SECOND_ADMIN_ID
+     ```
+   - Замените значения на ваши данные
+
+4. **Создание поддиректорий**
+   - Создайте папку `backup` внутри рабочей директории
+
+5. **Запуск бота**
+   - Дважды кликните на файл `.exe` для запуска бота
+   - Или запустите через командную строку:
+     ```
+     WireTransfer1.3.6.exe
+     ```
+
+## 🛠️ Решение проблем
+
+### Распространенные проблемы:
+
+1. **Бот не запускается**
+   - Проверьте токен бота в настройках
+   - Убедитесь, что все зависимости установлены
+   - Проверьте доступ к сети и прокси-настройки
+
+2. **Ошибка "Cannot connect to host api.telegram.org"**
+   - Проверьте подключение к интернету
+   - Если вы используете прокси, раскомментируйте и настройте прокси-секцию в коде
+
+3. **Проблемы с файлами данных**
+   - Убедитесь, что все необходимые JSON файлы созданы
+   - Проверьте права доступа к файлам
+   - Восстановите файлы из резервных копий (если есть)
+
+## 💻 Руководство пользователя
+
+### Для клиентов:
+1. **Начало работы**: Отправьте команду `/start` боту
+2. **Обмен валюты**: Нажмите кнопку "Обмен" и следуйте инструкциям
+3. **Просмотр курса**: Используйте кнопку "Курс" для отображения текущего курса обмена
+4. **Инструкции**: Нажмите "Инструкция" для получения подробной информации о процессе обмена
+5. **Отзывы**: Оставьте свой отзыв или просмотрите отзывы других пользователей
+
+### Для администраторов:
+1. **Панель администратора**: Доступна после авторизации с ADMIN_ID
+2. **Управление данными**: Возможность очистки файлов и просмотра данных пользователей
+3. **Модерация отзывов**: Одобрение или отклонение отзывов пользователей
+4. **Резервное копирование**: Создание и восстановление резервных копий данных
+
+## 🔄 Обновления в версии 1.3.6
+- 🔒 Улучшена система резервного копирования
+- 🧹 Оптимизирована очистка сообщений
+- 📝 Расширены комментарии в коде для облегчения поддержки
+- 🐛 Исправлены ошибки предыдущих версий
 
 ---
 
 <a id="eng"></a>
-## 🇬🇧 EUR/RUB Currency Exchange Telegram Bot
+# 🇬🇧 WireTransfer: Telegram Currency Exchange Bot
 
-### 📝 Description
-A professional Telegram bot for processing exchange operations between euros and rubles. WireTransfer provides a secure and user-friendly interface, comprehensive admin tools, real-time currency rates, and an improved review system.
+## 📋 Overview
+WireTransfer is a convenient Telegram bot for processing exchange operations between euros and rubles. The bot is designed for safe and efficient currency transactions with an intuitive interface.
 
-### 🚀 Key Features
-- **Currency Exchange**: Buy/sell euros with minimum amounts of 10,000 RUB or 100 EUR
-- **Real-time Rates**: Dynamic rate fetching from the Central Bank of Russia with markup
-- **Enhanced Review System**: User reviews with admin moderation (approve/reject)
-- **Banks**: Support for operations via Sberbank, Tinkoff, Raiffeisen
-- **Mobile Optimization**: Improved message deletion for mobile users
-- **Backup System**: Automatic data backup and recovery options
+## ✨ Key Features
+- 💱 **Currency Exchange**: Simple interface for buying or selling euros
+- 📊 **Current Rates**: Automatic retrieval of exchange rates from the Central Bank of Russia
+- 🔄 **Operation Confirmation**: Two-stage confirmation system for security
+- 📝 **Review System**: Ability to leave and view reviews with moderation
+- 🔄 **Backup System**: User data saving and recovery
 
-### ⚙️ Installation
-1. Download the ready-to-use exe file from [latest release](https://github.com/yourusername/wiretransfer/releases) or
-2. Manual installation:
-   - Clone the repository
-   - Install dependencies: `pip install pyTelegramBotAPI requests`
-   - Configure bot token and admin IDs in `main.py`
-   - Run the bot: `python main.py`
+## 🚀 Detailed Installation Guide
 
-### 👤 User Guide
-1. **Exchange Request**: 
-   - Select "Exchange" → Operation type → Bank → Enter amount → IBAN → Name/surname
-   - Confirm details and wait for admin contact
+### Method 1: Running from Source Code (Recommended for Developers)
 
-2. **Check Rates**:
-   - Click "Rate" to view current exchange rates
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/wiretransfer.git
+   cd wiretransfer
+   ```
 
-3. **Reviews**:
-   - Leave a review after completing an exchange
-   - View reviews from other users
+2. **Install Dependencies**
+   ```bash
+   pip install pyTelegramBotAPI requests
+   ```
+   or using requirements.txt:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 👨‍💼 Admin Panel
-- Review moderation (approve/reject)
-- View exchange requests
-- View user data
-- Clear system files
-- Create and restore data backups
+3. **Configure Settings**
+   - Open `main.py` in a text editor
+   - Replace `YOUR_BOT_TOKEN_HERE` with the bot token obtained from [@BotFather](https://t.me/BotFather)
+   - Set administrator IDs (`ADMIN_ID` and `ADMIN_ID2`) - these are Telegram IDs of users who will have admin rights
 
-### 🆕 What's New in Version 1.3.5
-- Added backup and restore functionality for data files
-- Maintained all functionality from version 1.3.1
-- Enhanced admin interface with new buttons
-- Updated documentation about known issues
+4. **Create Backup Directory**
+   ```bash
+   mkdir backup
+   ```
 
-See [RELEASE_NOTES.md](RELEASE_NOTES.md) for details
+5. **Initialize Data Files**
+   Create empty JSON files:
+   ```bash
+   echo "{}" > users_id.json
+   echo "{}" > users_id_review.json
+   echo "{}" > reviews.json
+   echo "{}" > reviews_confirm.json
+   ```
 
-### 🔒 Security
-- Input validation
-- Message history cleanup
-- Latin name verification
-- Minimal necessary data storage
-- Data backup and recovery
+6. **Launch the Bot**
+   ```bash
+   python main.py
+   ```
+
+### Method 2: Installing Executable File (For Regular Users)
+
+1. **Download the Ready-Made .exe File**
+   - Go to the [latest releases page](https://github.com/yourusername/wiretransfer/releases)
+   - Download the `WireTransfer1.3.6.exe` file
+
+2. **Create a Working Directory**
+   - Create a new folder, for example, `WireTransfer`
+   - Place the downloaded `.exe` file in this folder
+
+3. **Configure Settings**
+   - Create a `config.ini` file in the same folder with the following content:
+     ```ini
+     [Bot]
+     token=YOUR_BOT_TOKEN_HERE
+     admin_id=YOUR_ADMIN_ID
+     admin_id2=SECOND_ADMIN_ID
+     ```
+   - Replace values with your data
+
+4. **Create Subdirectories**
+   - Create a `backup` folder within the working directory
+
+5. **Launch the Bot**
+   - Double-click the `.exe` file to start the bot
+   - Or launch via command line:
+     ```
+     WireTransfer1.3.6.exe
+     ```
+
+## 🛠️ Troubleshooting
+
+### Common Issues:
+
+1. **Bot Won't Start**
+   - Check the bot token in settings
+   - Make sure all dependencies are installed
+   - Verify network access and proxy settings
+
+2. **Error "Cannot connect to host api.telegram.org"**
+   - Check your internet connection
+   - If you're using a proxy, uncomment and configure the proxy section in the code
+
+3. **Data File Problems**
+   - Ensure all necessary JSON files are created
+   - Check file access permissions
+   - Restore files from backups (if available)
+
+## 💻 User Guide
+
+### For Clients:
+1. **Getting Started**: Send the `/start` command to the bot
+2. **Currency Exchange**: Click the "Exchange" button and follow the instructions
+3. **View Rate**: Use the "Rate" button to display the current exchange rate
+4. **Instructions**: Click "Instructions" for detailed information about the exchange process
+5. **Reviews**: Leave your review or view reviews from other users
+
+### For Administrators:
+1. **Admin Panel**: Available after authentication with ADMIN_ID
+2. **Data Management**: Ability to clear files and view user data
+3. **Review Moderation**: Approve or reject user reviews
+4. **Backup**: Create and restore data backups
+
+## 🔄 Updates in Version 1.3.6
+- 🔒 Improved backup system
+- 🧹 Optimized message cleanup
+- 📝 Extended code comments for easier maintenance
+- 🐛 Fixed bugs from previous versions
 
 ---
 

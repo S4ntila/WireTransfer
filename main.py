@@ -634,9 +634,9 @@ bot.polling()
 # RUS: WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: WireTransfer - Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.3.5 (stable version with no canceling user_id in administration aborting review)
-#                                                                                              09.28.2023 13:59 GMT+9
-# Features: Adding buckuping and restoring files in admin debug menu
+# version 1.3.6 (stable version with improved documentation and setup instructions)
+#                                                                                              30.09.2023 15:30 GMT+9
+# Features: Improved README, detailed installation guides, and enhanced troubleshooting information
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
