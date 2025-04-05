@@ -44,7 +44,7 @@ The bot requires the following configuration:
 
 These values are hardcoded in the script:
 ```python
-ADMIN_ID = 1646373003
+ADMIN_ID = ID_USER
 bot = telebot.TeleBot('BOT_TOKEN')
 ```
 
