@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.1-blue.svg" alt="Version 1.3.1">
+  <img src="https://img.shields.io/badge/version-1.3.5-blue.svg" alt="Version 1.3.5">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -29,6 +29,7 @@
 - **Улучшенная система отзывов**: Отзывы пользователей с модерацией администратором (одобрение/отклонение)
 - **Банки**: Поддержка операций через Сбербанк, Тинькофф, Райффайзен
 - **Оптимизация для мобильных устройств**: Улучшенное удаление сообщений для мобильных пользователей
+- **Резервное копирование**: Автоматическое создание резервных копий данных и возможность восстановления
 
 ### ⚙️ Установка
 1. Скачайте готовый exe-файл из [последнего релиза](https://github.com/yourusername/wiretransfer/releases) или
@@ -55,11 +56,12 @@
 - Просмотр заявок на обмен
 - Просмотр данных пользователей
 - Очистка системных файлов
+- Создание и восстановление резервных копий данных
 
-### 🆕 Что нового в версии 1.3.1
-- Улучшены текстовые формулировки в разделе отзывов
-- Исправлены несоответствия в UI при просмотре отзывов
-- Сохранены все функции версии 1.3.0
+### 🆕 Что нового в версии 1.3.5
+- Добавлена функция резервного копирования и восстановления файлов данных
+- Сохранены все функции версии 1.3.1
+- Улучшен интерфейс администратора с новыми кнопками
 - Обновлена документация об известных проблемах
 
 Подробности смотрите в [RELEASE_NOTES.md](RELEASE_NOTES.md)
@@ -69,6 +71,7 @@
 - Очистка истории сообщений
 - Проверка имени латиницей
 - Хранение минимума необходимых данных
+- Резервное копирование данных
 
 ---
 
@@ -84,6 +87,7 @@ A professional Telegram bot for processing exchange operations between euros and
 - **Enhanced Review System**: User reviews with admin moderation (approve/reject)
 - **Banks**: Support for operations via Sberbank, Tinkoff, Raiffeisen
 - **Mobile Optimization**: Improved message deletion for mobile users
+- **Backup System**: Automatic data backup and recovery options
 
 ### ⚙️ Installation
 1. Download the ready-to-use exe file from [latest release](https://github.com/yourusername/wiretransfer/releases) or
@@ -110,11 +114,12 @@ A professional Telegram bot for processing exchange operations between euros and
 - View exchange requests
 - View user data
 - Clear system files
+- Create and restore data backups
 
-### 🆕 What's New in Version 1.3.1
-- Improved text phrasing in reviews section
-- Fixed UI inconsistencies in review viewing
-- Maintained all functionality from version 1.3.0
+### 🆕 What's New in Version 1.3.5
+- Added backup and restore functionality for data files
+- Maintained all functionality from version 1.3.1
+- Enhanced admin interface with new buttons
 - Updated documentation about known issues
 
 See [RELEASE_NOTES.md](RELEASE_NOTES.md) for details
@@ -124,6 +129,7 @@ See [RELEASE_NOTES.md](RELEASE_NOTES.md) for details
 - Message history cleanup
 - Latin name verification
 - Minimal necessary data storage
+- Data backup and recovery
 
 ---
 
