@@ -1,6 +1,6 @@
-# Telegram Currency Exchange Bot
+# Telegram Currency Exchange Bot (v0.1.3)
 
-A Telegram bot for EUR/RUB currency exchange that allows users to check current rates, get exchange instructions, and submit exchange requests. The bot features an admin notification system and user-friendly inline keyboards.
+A Telegram bot for EUR/RUB currency exchange that allows users to check current rates, get exchange instructions, submit exchange requests, and write reviews. The bot features an admin notification system, anti-spam protection, and user-friendly interface with custom keyboards.
 
 ## Features
 
@@ -9,15 +9,21 @@ A Telegram bot for EUR/RUB currency exchange that allows users to check current 
 - **Exchange Functionality**: 
   - Buy euros with rubles
   - Sell euros for rubles
-  - Maximum exchange amount: 10,000 EUR
-- **Admin Notifications**: Notifies the admin about new exchange requests
-- **User-friendly Interface**: Uses inline keyboards for easy navigation
+  - Bank selection (Sberbank, Tinkoff, Raiffeisen)
+- **Review System**:
+  - Users can write reviews after completing an exchange
+  - Users can read reviews from other customers
+- **Admin Management**: Special commands and notifications for administrators
+- **Anti-spam Protection**: Prevents users from submitting too many requests
+- **User-friendly Interface**: Uses both inline and reply keyboards for easy navigation
 
 ## Requirements
 
 - Python 3.6+
 - telebot (pyTelegramBotAPI)
 - requests
+- json (standard library)
+- time (standard library)
 
 ## Installation
 
@@ -28,7 +34,7 @@ A Telegram bot for EUR/RUB currency exchange that allows users to check current 
 pip install pyTelegramBotAPI requests
 ```
 
-3. Configure the bot token and admin ID (see Configuration section)
+3. Configure the bot token and admin ID in the script (see Configuration section)
 
 4. Run the bot:
 ```bash
@@ -42,13 +48,7 @@ The bot requires the following configuration:
 - **Bot Token**: Obtained from BotFather on Telegram
 - **Admin ID**: Telegram user ID of the administrator who will receive notifications
 
-These values are hardcoded in the script:
-```python
-ADMIN_ID = ID_USER
-bot = telebot.TeleBot('BOT_TOKEN')
-```
-
-For production use, it's recommended to store these values as environment variables.
+For production use, it's recommended to store these values as environment variables instead of hardcoding them in the script.
 
 ## Usage
 
@@ -58,16 +58,33 @@ For production use, it's recommended to store these values as environment variab
 - `/rate` - Check current EUR/RUB exchange rates
 - `/instruction` - Get instructions on the exchange process
 - `/exchange` - Access the exchange menu to buy or sell euros
+- `/reviews` - Access the reviews menu to write or read reviews
 
 ### Exchange Process
 
-1. User selects "Buy" or "Sell" from the exchange menu
-2. User enters the amount in euros (0.01-10,000)
-3. User provides their full name
-4. User provides their IBAN
-5. User confirms the exchange request
-6. Admin receives a notification about the new request
-7. Admin contacts the user to complete the exchange
+1. User selects "Обмен" (Exchange) from the main menu
+2. User chooses transaction type (Buy or Sell)
+3. User enters the amount in euros
+4. User provides their full name
+5. User provides their IBAN
+6. User selects their bank from available options
+7. User confirms the exchange request
+8. Admin receives a notification about the new request
+9. Admin contacts the user to complete the exchange
+
+### Review System
+
+1. User selects "Отзывы" (Reviews) from the main menu
+2. User can choose to write a review (if they've completed an exchange)
+3. User can choose to read reviews from other customers
+4. Admin can clear all reviews if needed
+
+## Data Storage
+
+The bot uses JSON files to store:
+- User IDs who have completed exchanges
+- User IDs who have left reviews
+- Review content
 
 ## License
 
