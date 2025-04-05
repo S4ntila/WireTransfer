@@ -1,11 +1,11 @@
-# WireTransfer 1.4.5
+# WireTransfer 1.4.6
 
 <p align="center">
   <img src="icon.jpg" alt="WireTransfer Logo" width="200" height="200">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.4.5-blue.svg" alt="Version 1.4.5">
+  <img src="https://img.shields.io/badge/version-1.4.6-blue.svg" alt="Version 1.4.6">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -106,11 +106,11 @@ WireTransfer — это удобный Telegram бот для обработки
 3. **Модерация отзывов**: Одобрение или отклонение отзывов пользователей
 4. **Резервное копирование**: Создание и восстановление резервных копий данных
 
-## 🔄 Обновления в версии 1.4.5
-- 🔧 **Улучшенная обработка отзывов**: Исправлена проблема с обработкой ID пользователей при отклонении отзывов администратором
-- 📝 **Обновленные инструкции**: Модифицированы инструкции для более четкого объяснения процесса обмена
-- 🔄 **Улучшенная загрузка множителей**: Добавлены значения по умолчанию при отсутствии файла множителей
-- 👨‍💼 **Дополнительные настройки курса**: Добавлена возможность отдельного управления курсом для определенных пользователей
+## 🔄 Обновления в версии 1.4.6
+- 🔧 **Исправлена обработка ID пользователей**: Исправлена проблема с обработкой ID пользователей при отклонении отзывов администратором
+- 🛡️ **Улучшенная стабильность системы**: Увеличена надежность работы с пользовательскими данными
+- 📝 **Оптимизированная работа с отзывами**: Улучшена работа системы модерации отзывов
+- 🔄 **Техническое обслуживание**: Обновлен код для обеспечения лучшей производительности
 
 ---
 
@@ -203,11 +203,11 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 3. **Review Moderation**: Approve or reject user reviews
 4. **Backup**: Create and restore data backups
 
-## 🔄 Updates in Version 1.4.5
-- 🔧 **Improved Review Processing**: Fixed issue with user ID handling when administrators reject reviews
-- 📝 **Updated Instructions**: Modified instructions for clearer explanation of the exchange process
-- 🔄 **Enhanced Multiplier Loading**: Added default values when multiplier file is missing
-- 👨‍💼 **Additional Rate Settings**: Added ability to manage separate exchange rates for specific users
+## 🔄 Updates in Version 1.4.6
+- 🔧 **Fixed User ID Processing**: Fixed issue with user ID handling when administrators reject reviews
+- 🛡️ **Enhanced System Stability**: Increased reliability of user data management
+- 📝 **Optimized Review Processing**: Improved review moderation system
+- 🔄 **Technical Maintenance**: Updated code to ensure better performance
 
 ---
 

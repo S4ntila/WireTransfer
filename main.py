@@ -760,9 +760,9 @@ bot.polling()
 # RUS: Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.4.5 (stable version with no canceling user_id in administration aborting review)
-#                                                                                              10.03.2023 12:33 GMT+9
-# Features: added a separate course for Arkhip, also slightly modified instructions
+# version 1.4.6 (stable version with no canceling user_id in administration aborting review)
+#                                                                                              10.07.2023 22:16 GMT+9
+# Features: ---
 # Bugs and problems: The user_id dont removed if administrastion abort review, dont disapearing message after review sending
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
