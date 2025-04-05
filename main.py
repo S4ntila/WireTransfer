@@ -61,7 +61,7 @@ def get_eur_rub(): # Определяем функцию для получени
     else:
         return None
     
-def get_eur_rub_rate(type): # Преобразуемый полученные данные и подговняем под нужный курс
+def get_eur_rub_rate(type): # Подгоняем под нужный курс
     if type == "Покупка":
         eur_rub_buy = round(get_eur_rub() * 1.053, 2)
         return eur_rub_buy 
@@ -82,7 +82,6 @@ def check_spam(user_id):
             return False
     else:
         return True
-
 #-----------------------------------УДАЛЕНИЕ------------------------------------#
 def delete_user_info_about(message):
     os.remove("users_id.json")
@@ -333,7 +332,6 @@ def confirm_exit(message):
     print(user_state.user_id)
 
 def confirm_screen(message):
-    print(user_state.username)
     clean_message_history(message)
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton('Подтвердить', callback_data='confirm'), types.InlineKeyboardButton('Отмена', callback_data='cancel'))
@@ -477,5 +475,5 @@ def check_user_id_review(user_id):
 bot.polling()
 # -----------------------------------------------------------
 # Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# version 2.8 
+# version 3.0 (stable version)
 # -----------------------------------------------------------
