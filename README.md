@@ -32,7 +32,7 @@ pip install pyTelegramBotAPI requests
 
 4. Run the bot:
 ```bash
-python bot0_1.py
+python main.py
 ```
 
 ## Configuration
