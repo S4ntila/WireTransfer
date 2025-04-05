@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version 1.1.0">
+  <img src="https://img.shields.io/badge/version-1.2.7-blue.svg" alt="Version 1.2.7">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -21,19 +21,22 @@
 ## 🇷🇺 Телеграм-бот для обмена валюты EUR/RUB
 
 ### 📝 Описание
-Профессиональный Telegram-бот для обработки обменных операций между евро и рублями. WireTransfer обеспечивает безопасный и удобный интерфейс для пользователей, включает инструменты администрирования, отображение актуальных курсов валют и систему отзывов.
+Профессиональный Telegram-бот для обработки обменных операций между евро и рублями. WireTransfer обеспечивает безопасный и удобный интерфейс для пользователей, включает инструменты администрирования, отображение актуальных курсов валют и усовершенствованную систему отзывов.
 
 ### 🚀 Основные функции
 - **Обмен валюты**: Покупка/продажа евро с минимальными суммами от 10 000 RUB или 100 EUR
 - **Актуальные курсы**: Динамическое получение курсов от ЦБ РФ с наценкой
-- **Система отзывов**: Отзывы пользователей с модерацией администратором
+- **Улучшенная система отзывов**: Отзывы пользователей с модерацией администратором (одобрение/отклонение)
 - **Банки**: Поддержка операций через Сбербанк, Тинькофф, Райффайзен
+- **Оптимизация для мобильных устройств**: Улучшенное удаление сообщений для мобильных пользователей
 
 ### ⚙️ Установка
-1. Клонировать репозиторий
-2. Установить зависимости: `pip install pyTelegramBotAPI requests`
-3. Настроить токен бота и ID администраторов в `main.py`
-4. Запустить бот: `python main.py`
+1. Скачайте готовый exe-файл из [последнего релиза](https://github.com/yourusername/wiretransfer/releases) или
+2. Установите вручную:
+   - Клонировать репозиторий
+   - Установить зависимости: `pip install pyTelegramBotAPI requests`
+   - Настроить токен бота и ID администраторов в `main.py`
+   - Запустить бот: `python main.py`
 
 ### 👤 Руководство пользователя
 1. **Запрос обмена**: 
@@ -53,6 +56,14 @@
 - Просмотр данных пользователей
 - Очистка системных файлов
 
+### 🆕 Что нового в версии 1.2.7
+- Исправлена работа системы подтверждения отзывов администраторами
+- Добавлена функция для удаления отзывов из буфера отзывов
+- Оптимизировано удаление сообщений для мобильных устройств
+- Исправлен баг проверки предыдущих отправок отзывов пользователем
+
+Подробности смотрите в [RELEASE_NOTES.md](RELEASE_NOTES.md)
+
 ### 🔒 Безопасность
 - Валидация входных данных
 - Очистка истории сообщений
@@ -65,19 +76,22 @@
 ## 🇬🇧 EUR/RUB Currency Exchange Telegram Bot
 
 ### 📝 Description
-A professional Telegram bot for processing exchange operations between euros and rubles. WireTransfer provides a secure and user-friendly interface, comprehensive admin tools, real-time currency rates, and a review system.
+A professional Telegram bot for processing exchange operations between euros and rubles. WireTransfer provides a secure and user-friendly interface, comprehensive admin tools, real-time currency rates, and an improved review system.
 
 ### 🚀 Key Features
 - **Currency Exchange**: Buy/sell euros with minimum amounts of 10,000 RUB or 100 EUR
 - **Real-time Rates**: Dynamic rate fetching from the Central Bank of Russia with markup
-- **Review System**: User reviews with admin moderation
+- **Enhanced Review System**: User reviews with admin moderation (approve/reject)
 - **Banks**: Support for operations via Sberbank, Tinkoff, Raiffeisen
+- **Mobile Optimization**: Improved message deletion for mobile users
 
 ### ⚙️ Installation
-1. Clone the repository
-2. Install dependencies: `pip install pyTelegramBotAPI requests`
-3. Configure bot token and admin IDs in `main.py`
-4. Run the bot: `python main.py`
+1. Download the ready-to-use exe file from [latest release](https://github.com/yourusername/wiretransfer/releases) or
+2. Manual installation:
+   - Clone the repository
+   - Install dependencies: `pip install pyTelegramBotAPI requests`
+   - Configure bot token and admin IDs in `main.py`
+   - Run the bot: `python main.py`
 
 ### 👤 User Guide
 1. **Exchange Request**: 
@@ -96,6 +110,14 @@ A professional Telegram bot for processing exchange operations between euros and
 - View exchange requests
 - View user data
 - Clear system files
+
+### 🆕 What's New in Version 1.2.7
+- Fixed admin review confirmation system
+- Added function for deleting reviews from the review buffer
+- Optimized message deletion for mobile devices
+- Fixed bug in checking user's previous review submissions
+
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for details
 
 ### 🔒 Security
 - Input validation
