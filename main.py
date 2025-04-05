@@ -86,9 +86,9 @@ def check_spam(user_id):
 #-----------------------------------УДАЛЕНИЕ------------------------------------#
 def delete_user_info_about(message): # Чистка файлов
     try:
-        #with open("users_id.json", 'w') as file:
-            #data = {} # создаем пустой словарь
-            #json.dump(data, file) # сохраняем его в файл
+        with open("users_id.json", 'w') as file:
+            data = {} # создаем пустой словарь
+            json.dump(data, file) # сохраняем его в файл
         pass
     except:
         print("Файл users_id.json не был найден или не может быть открыт")
@@ -222,12 +222,13 @@ def confirm_review_by_admin(call, user_id):
     user_reviews = load_reviews_confirm()
     review = user_reviews[user_id][0]
     save_reviews(user_id)
-    delete_review_confirm(user_id)
+    delete_review_from_buffer(user_id)
 
     bot.send_message(call.message.chat.id, f"Отзыв пользователя @{bot.get_chat_member(user_id, user_id).user.username} был успешно опубликован! 🎉")
 
 def cancel_review_by_admin(call, user_id):
     delete_review_from_buffer(user_id)
+    print(check_user_id_review(user_id))
 
     bot.send_message(call.message.chat.id, f"Отзыв пользователя @{bot.get_chat_member(user_id, user_id).user.username} был успешно отклонён! 🎉")
 
@@ -309,8 +310,8 @@ def iban_input(message):
 
 def iban_check(message):
     if message.text == '/start':
-        delete_the_fucking_message(message)
         start_screen(message)
+        delete_the_fucking_message(message)
     else:
         user_state.iban = message.text
         name_input(message)
@@ -327,8 +328,8 @@ def name_input(message):
 
 def name_check(message):
     if message.text == '/start':
-        delete_the_fucking_message(message)
         start_screen(message)
+        delete_the_fucking_message(message)
     else:
         if re.match("^[A-Za-z ]+$", message.text):
             user_state.name = message.text
@@ -350,6 +351,22 @@ def confirm_screen(message):
     else:
         bot.send_message(message.chat.id, f'Подтвердите ваши данные:\n\nТип перевода: <b>{user_state.type}</b>\nВаш банк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b>\nIBAN: <b>{user_state.iban}</b>\nИмя и Фамилия: <b>{user_state.name}</b>',
                         parse_mode='html', reply_markup=keyboard)
+
+def confirm_exit(message):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton('В главное меню', callback_data='cancel'))
+    bot.send_message(message.chat.id, f"✅ Ваша заявка создана!\n\nОжидайте, в ближайшее время свяжусь с вами 📞", reply_markup=keyboard)
+
+    if user_state.type == "Покупка":
+        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} RUB\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} руб.</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+    else:
+        bot.send_message(ADMIN_ID, f"Новая заявка на обмен валюты от пользователя @{user_state.username}:\n\nТип перевода: {user_state.type}\nБанк: {user_state.bank}\nСумма обмена: {user_state.amount} EUR\nIBAN: {user_state.iban}\nИмя и Фамилия: {user_state.name}\n\nСвяжитесь с пользователем по идентификатору @{user_state.username} для уточнения деталей обмена.")
+        bot.send_message(ADMIN_ID2, f"#заявка\n\nТип перевода: <b>{user_state.type}</b>\nБанк: <b>{user_state.bank}</b>\nСумма: <b>{user_state.amount} евро</b>\n\n<b>{user_state.iban}</b>\n<b>{user_state.name}</b>\n\n<b>@{user_state.username}</b>", parse_mode='html')
+
+    delete_the_fucking_message(message)
+    
+    save_user_id(user_state.user_id)
 
 def show_data(message):
     keyboard = types.InlineKeyboardMarkup()
@@ -384,6 +401,7 @@ def show_data(message):
         return False
     except Exception as e:
         return False
+    delete_the_fucking_message(message) #####
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
@@ -487,10 +505,13 @@ def save_user_id(user_id):
         with open(userID_file, 'r') as file:
             data = json.load(file)
             user_ids = data.get('user_ids', [])
-        with open(userID_file, 'w') as file:
-            user_ids.append(user_id)
-            data = {'user_ids': user_ids}
-            json.dump(data, file)
+        if user_id in user_ids:
+            print('Пользователь уже ранее оставалял заявки')
+        else:
+            with open(userID_file, 'w') as file:
+                user_ids.append(user_id)
+                data = {'user_ids': user_ids}
+                json.dump(data, file)
     except Exception as e:
         print(f'Ошибка при сохранении User ID: {e}')
 
@@ -511,10 +532,13 @@ def save_user_id_review(user_id):
         with open(userID_file_review, 'r') as file:
             data = json.load(file)
             user_ids = data.get('user_ids', [])
-        with open(userID_file_review, 'w') as file:
-            user_ids.append(user_id)
-            data = {'user_ids': user_ids}
-            json.dump(data, file)
+        if user_id in user_ids:
+            print('Пользователь уже ранее оставалял отзыв')
+        else:
+            with open(userID_file_review, 'w') as file:
+                user_ids.append(user_id)
+                data = {'user_ids': user_ids}
+                json.dump(data, file)
     except Exception as e:
         print(f'Ошибка при сохранении User ID: {e}')
 
@@ -534,25 +558,23 @@ def check_user_id(user_id):
 
 def check_user_id_review(user_id):
     try:
-        with open(reviews_file_confirm, mode="r") as file:
-            user_reviews = json.load(file)
-        if str(user_id) in user_reviews:
-            return True
-        else:
-            return False
+        with open(userID_file_review, 'r') as file:
+            data = json.load(file)
+            user_ids = data.get('user_ids', [])
+            if user_id in user_ids:
+                return True
+            else:
+                return False
     except FileNotFoundError:
         return False
     except Exception as e:
-        print(f'Ошибка при проверке User ID Reviews: {e}')
+        print(f'Ошибка при проверке User ID: {e}')
         return False
     
 def delete_review_from_buffer(user_id):
-    print(user_id)
     with open(reviews_file_confirm, mode="r") as file:
         user_reviews = json.load(file)
-        print(user_reviews)
     if user_id in user_reviews:
-        print("Нашёл")
         del user_reviews[user_id]
         with open(reviews_file_confirm, mode="w") as file:
             json.dump(user_reviews, file)
@@ -581,12 +603,10 @@ bot.polling()
 # RUS: WireTransfer - Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
 # ENG: WireTransfer - Telegram Bot developed for processing applications for currency exchange related to the Ruble and Euro
 #
-# version 1.2.7 (stable version with bug in checking review posting by user)
-#                                                                                              09.27.2023 16:23 GMT+9
-# Features: Confirmation of review by administrators has been fixed, 
-#                       a function for deleting a review from the review buffer has also been added, 
-#                       deletion has been optimized for mobile devices
-# Bugs and problems: The function to check the user for previous revocation submissions was broken
+# version 1.3.0 (stable version with no canceling user_id in administration aborting review)
+#                                                                                              09.27.2023 18:28 GMT+9
+# Features: Fix removing reviews
+# Bugs and problems: The user_id dont removed if administrastion abort review
 #
 # (C) 2023 Aleksander Samarin, Blagoveshchensk, Russia
 # Powered by RSantila 

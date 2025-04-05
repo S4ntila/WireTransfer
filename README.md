@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.7-blue.svg" alt="Version 1.2.7">
+  <img src="https://img.shields.io/badge/version-1.3.0-blue.svg" alt="Version 1.3.0">
   <img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python 3.6+">
   <img src="https://img.shields.io/badge/license-Private-red.svg" alt="License: Private">
 </p>
@@ -56,11 +56,11 @@
 - Просмотр данных пользователей
 - Очистка системных файлов
 
-### 🆕 Что нового в версии 1.2.7
-- Исправлена работа системы подтверждения отзывов администраторами
-- Добавлена функция для удаления отзывов из буфера отзывов
-- Оптимизировано удаление сообщений для мобильных устройств
-- Исправлен баг проверки предыдущих отправок отзывов пользователем
+### 🆕 Что нового в версии 1.3.0
+- Исправлена ошибка удаления отзывов при отклонении администратором
+- Улучшена проверка существующих заявок пользователей
+- Оптимизирован порядок операций в обработке команды `/start`
+- Улучшена очистка данных в files системе
 
 Подробности смотрите в [RELEASE_NOTES.md](RELEASE_NOTES.md)
 
@@ -111,11 +111,11 @@ A professional Telegram bot for processing exchange operations between euros and
 - View user data
 - Clear system files
 
-### 🆕 What's New in Version 1.2.7
-- Fixed admin review confirmation system
-- Added function for deleting reviews from the review buffer
-- Optimized message deletion for mobile devices
-- Fixed bug in checking user's previous review submissions
+### 🆕 What's New in Version 1.3.0
+- Fixed review deletion issue when rejected by administrator
+- Improved checking of existing user requests
+- Optimized operation order in `/start` command handling
+- Enhanced data clearing in file system
 
 See [RELEASE_NOTES.md](RELEASE_NOTES.md) for details
 
