@@ -256,18 +256,18 @@ def amount_check(message):
     try:
         amount = int(message.text)
         if user_state.type == 'Покупка':
-            if amount >= 10000:
+            if amount >= 10000 and amount <= 500000:
                 user_state.amount = amount
                 iban_input(message)
             else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 10000 рублей. Попробуй еще раз.')
+                bot.send_message(message.chat.id, 'Сумма должна быть больше 10000 рублей и не больше 500000 рублей. Попробуй еще раз.')
                 amount_input(message)
         else:
-            if amount >= 100:
+            if amount >= 100 and amount <= 5000:
                 user_state.amount = amount
                 iban_input(message)
             else:
-                bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро. Попробуй еще раз.')
+                bot.send_message(message.chat.id, 'Сумма должна быть больше 100 евро и не больше 5000 евро. Попробуй еще раз.')
                 amount_input(message)
     except:
         if message.text == '/start':
@@ -475,5 +475,5 @@ def check_user_id_review(user_id):
 bot.polling()
 # -----------------------------------------------------------
 # Телеграмм Бот разработанный под оформление заявок на обмен валюты связанные с Рублём и Евро
-# version 3.0 (stable version)
+# version 3.1 (stable version - added upper transaction limits)
 # -----------------------------------------------------------
