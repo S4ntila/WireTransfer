@@ -127,8 +127,6 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
 
 ## 🚀 Detailed Installation Guide
 
-### Method 1: Running from Source Code (Recommended for Developers)
-
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/yourusername/wiretransfer.git
@@ -167,36 +165,6 @@ WireTransfer is a convenient Telegram bot for processing exchange operations bet
    ```bash
    python main.py
    ```
-
-### Method 2: Installing Executable File (For Regular Users)
-
-1. **Download the Ready-Made .exe File**
-   - Go to the [latest releases page](https://github.com/yourusername/wiretransfer/releases)
-   - Download the `WireTransfer1.3.6.exe` file
-
-2. **Create a Working Directory**
-   - Create a new folder, for example, `WireTransfer`
-   - Place the downloaded `.exe` file in this folder
-
-3. **Configure Settings**
-   - Create a `config.ini` file in the same folder with the following content:
-     ```ini
-     [Bot]
-     token=YOUR_BOT_TOKEN_HERE
-     admin_id=YOUR_ADMIN_ID
-     admin_id2=SECOND_ADMIN_ID
-     ```
-   - Replace values with your data
-
-4. **Create Subdirectories**
-   - Create a `backup` folder within the working directory
-
-5. **Launch the Bot**
-   - Double-click the `.exe` file to start the bot
-   - Or launch via command line:
-     ```
-     WireTransfer1.3.6.exe
-     ```
 
 ## 🛠️ Troubleshooting
 
