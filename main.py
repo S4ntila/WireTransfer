@@ -5,10 +5,10 @@ from telebot import types
 import os # Модуль для работы с переменными окружения
 
 # Получаем токен для нашего бота от BotFather
-ADMIN_ID = 1646373003
+ADMIN_ID = "ID_USER"
 
 # Создаем экземпляр бота с помощью библиотеки pyTelegramBotAPI
-bot = telebot.TeleBot('6417756917:AAEKtdLxnq4gWjuVg-qSg2U3KjiXNKrgDw0')
+bot = telebot.TeleBot('BOT_TOKEN')
 
 # Определяем функцию для получения курса евро к рублю с помощью API Центробанка России
 def get_eur_rub():
